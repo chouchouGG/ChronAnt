@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace: 命名空间，用于标识每一个Mapper XML文件中的语句，预防在不同的Mapper XML文件中存在相同的语句ID-->
+<mapper namespace="cn.uhoc.infra.persistent.dao.TaskDao">
+    <!--resultType: 也称为自动映射，只有在表的列名与POJO类的属性完全一致时映射，会比较方便-->
+    <resultMap id="getTaskList" type="cn.uhoc.infra.persistent.po.Task">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="task_id" property="taskId"/>
+        <result column="task_type" property="taskType"/>
+        <result column="task_stage" property="taskStage"/>
+        <result column="status" property="status"/>
+        <result column="crt_retry_num" property="crtRetryNum"/>
+        <result column="max_retry_num" property="maxRetryNum"/>
+        <result column="priority" property="orderTime"/>
+        <result column="order_time" property="priority"/>
+        <result column="max_retry_interval" property="maxRetryInterval"/>
+        <result column="schedule_log" property="scheduleLog"/>
+        <result column="task_context" property="taskContext"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+
+</mapper>

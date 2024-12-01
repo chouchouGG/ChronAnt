@@ -19,7 +19,7 @@
         <module>ChronAnt-api</module>
         <module>ChronAnt-app</module>
         <module>ChronAnt-domain</module>
-        <module>ChronAnt-infra</module>
+        <module>ChronAnt-infrastructure</module>
         <module>ChronAnt-trigger</module>
         <module>ChronAnt-type</module>
     </modules>

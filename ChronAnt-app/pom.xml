@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>cn.uhoc</groupId>
-            <artifactId>ChronAnt-infra</artifactId>
+            <artifactId>ChronAnt-infrastructure</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
