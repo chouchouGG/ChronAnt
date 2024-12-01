@@ -1,5 +1,61 @@
+server:
+  port: 9857
+  address: localhost
+  tomcat:
+    threads:
+      max: 200        # 设定处理客户请求的线程的最大数目，决定了服务器可以同时响应客户请求的数,默认200
+      min-spare: 50   # 初始化线程数,最小空闲线程数,默认是10
+    accept-count: 10  # 等待队列长度
+
 spring:
-  config:
-    name: ChronAnt-app
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/asyncflow?serverTimezone=GMT%2B8&characterEncoding=utf8&useSSL=false
+    username: root
+    password: root
+    # TODO 学习常见数据库连接池的差异
+    #    type: com.alibaba.druid.pool.DruidDataSource
+    #    druid:
+    #        min-idle: 1                                          # 最小连接数
+    #        max-active: 8                                         # 最大连接数(默认8)
+    #        max-wait: 1000                                       # 获取连接时的最大等待时间
+    #        min-evictable-idle-time-millis: 300000               # 一个连接在池中最小生存的时间，单位是毫秒
+    #        time-between-eviction-runs-millis: 60000             # 多久才进行一次检测需要关闭的空闲连接，单位是毫秒
+    # 指定数据源的实现类，这里使用 HikariCP
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: Retail_HikariCP # 连接池的名称
+      minimum-idle: 15 # 连接池中保持的最小空闲连接数
+      idle-timeout: 180000 # 空闲连接最大存活时间，超过此时间的空闲连接将被回收（毫秒），默认600000毫秒，即10分钟
+      maximum-pool-size: 25 # 连接池中允许的最大连接数，默认10
+      auto-commit: true  # 控制连接的默认自动提交行为，默认值：true
+      max-lifetime: 1800000 # 连接在连接池中允许的最长生命周期（毫秒），值0表示无限生命周期，默认1800000毫秒，即30分钟
+      connection-timeout: 30000 # 获取数据库连接超时时间（毫秒），默认30000毫秒，即30秒
+      connection-test-query: SELECT 1 # 测试连接的查询语句
 
+# 线程池配置
+thread:
+  pool:
+    executor:
+      config:
+        core-pool-size: 20
+        max-pool-size: 50
+        keep-alive-time: 5000
+        block-queue-size: 5000
+        policy: CallerRunsPolicy
 
+# MyBatis配置
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  config-location:  classpath:/mybatis/config/mybatis-config.xml
+  configuration:
+    # 开启 [数据库表字段] 与 [实体类字段] 之间的命名规则自动映射，将表字段（user_name）映射为类属性（userName）
+    map-underscore-to-camel-case: true
+    # 指定MyBatis的日志实现：将执行的 SQL 语句和参数打印到控制台
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
