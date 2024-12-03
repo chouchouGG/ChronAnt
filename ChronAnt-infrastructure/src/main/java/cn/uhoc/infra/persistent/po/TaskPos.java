@@ -7,7 +7,7 @@ import lombok.Data;
  * @TableName t_schedule_pos
  */
 @Data
-public class SchedulePosition {
+public class TaskPos {
 
     /**
      * 自增id

@@ -3,7 +3,7 @@ package cn.uhoc.infra.persistent.po;
 import lombok.Data;
 
 @Data
-public class ScheduleConfig {
+public class TaskCfg {
 
     /**
      * 任务类型

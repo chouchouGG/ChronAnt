@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.uhoc.infra.persistent.dao.ScheduleConfigDao">
+<mapper namespace="cn.uhoc.infra.persistent.dao.ITaskCfgDao">
 
-    <resultMap id="resultMap" type="cn.uhoc.infra.persistent.po.ScheduleConfig">
+    <resultMap id="resultMap" type="cn.uhoc.infra.persistent.po.TaskCfg">
         <result column="task_type" property="taskType"/>
         <result column="schedule_limit" property="scheduleLimit"/>
         <result column="schedule_interval" property="scheduleInterval"/>
@@ -13,5 +13,10 @@
         <result column="create_time" property="createTime"/>
         <result column="modify_time" property="modifyTime"/>
     </resultMap>
+    <select id="getTaskConfigByType" resultMap="resultMap">
+        SELECT *
+        FROM `t_schedule_cfg`
+        where task_type = #{task_type}
+    </select>
 
 </mapper>

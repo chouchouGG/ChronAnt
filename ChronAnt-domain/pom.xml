@@ -23,6 +23,12 @@
             <artifactId>ChronAnt-type</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>cn.uhoc</groupId>
+            <artifactId>ChronAnt-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
