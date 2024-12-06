@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum ExceptionCode {
+public enum ExceptionStatus {
 
     // TODO 为每个响应码添加注释
     // TODO 学习枚举enum
@@ -26,7 +26,7 @@ public enum ExceptionCode {
     ERR_GET_TASK_LIST(8038, "get task list failed"),
     ERR_GET_TASK_CFG(8039, "get task config failed"),
 //    ERR_INCREASE_CRT_RETRY_NUM(8040, "set task failed"),
-//    ERR_SET_TASK(8041, "increase crt retry num failed"),
+    ERR_SET_TASK(8041, "increase crt retry num failed"),
     /**
      * 获取任务位置失败
      */

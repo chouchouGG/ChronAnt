@@ -14,4 +14,10 @@ public interface ITaskDao {
     List<Task> getTaskList(String tableName, String taskType, int status, int limit);
 
     Task getTaskById(String taskId, String tableName);
+
+    void updateStatusBatch(String tableName, List<String> taskIds, int status);
+
+    void updateTask(TaskEntity task, List<Integer> statusList, String tableName);
+
+    List<Task> getTaskByUseridAndStatus(String userId, List<Integer> statusList, String tableName);
 }

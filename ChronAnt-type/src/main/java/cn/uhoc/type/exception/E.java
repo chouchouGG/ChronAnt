@@ -1,6 +1,6 @@
 package cn.uhoc.type.exception;
 
-import cn.uhoc.type.enums.ExceptionCode;
+import cn.uhoc.type.enums.ExceptionStatus;
 import lombok.Data;
 
 /**
@@ -29,7 +29,7 @@ public class E extends RuntimeException{
         super.initCause(cause);
     }
 
-    public E(ExceptionCode r) {
+    public E(ExceptionStatus r) {
         this(r.getCode(), r.getInfo());
     }
 

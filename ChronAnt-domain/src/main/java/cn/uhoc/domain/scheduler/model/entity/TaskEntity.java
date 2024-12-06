@@ -1,6 +1,11 @@
 package cn.uhoc.domain.scheduler.model.entity;
 
-import lombok.*;
+import cn.uhoc.domain.scheduler.model.vo.TaskConstants;
+import cn.uhoc.trigger.api.dto.TaskResDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @program: ChronAnt
@@ -62,5 +67,23 @@ public class TaskEntity {
      * 任务上下文，用户自定义
      */
     private String taskContext;
+
+    /**
+     * Entity转为DTO
+     */
+    public TaskResDTO toDTO() {
+        return TaskResDTO.builder()
+                .userId(this.getUserId())
+                .taskId(this.getTaskId())
+                .taskType(this.getTaskType())
+                .taskStage(this.getTaskStage())
+                .status(this.getStatus())
+                .crtRetryNum(this.getCrtRetryNum())
+                .maxRetryNum(this.getMaxRetryNum())
+                .maxRetryInterval(this.getMaxRetryInterval())
+                .scheduleLog(this.getScheduleLog())
+                .taskContext(this.getTaskContext())
+                .build();
+    }
 
 }

@@ -3,7 +3,12 @@ package cn.uhoc.trigger.api;
 import cn.uhoc.trigger.api.dto.TaskCreateReqDTO;
 import cn.uhoc.trigger.api.dto.TaskCreateResDTO;
 import cn.uhoc.trigger.api.dto.TaskResDTO;
+import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
 import cn.uhoc.type.model.R;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @program: ChronAnt
@@ -18,30 +23,31 @@ public interface ITaskController {
      */
     R<TaskCreateResDTO> createTask(TaskCreateReqDTO taskCreateReqDTO);
 
-//    /**
-//     * 获取任务列表
-//     */
-//    R<List<>> getTaskList(String taskType, int status, int limit);
-
-//    /**
-//     * 更改任务信息
-//     */
-//    <T> ReturnStatus<T> setTask(AsyncTaskSetRequest asyncTaskSetRequest);
-//
     /**
-     * 获取任务
+     * 获取任务列表
+     */
+    R<List<TaskResDTO>> getTaskList(String taskType, int status, int limit);
+
+    /**
+     * 获取单个任务
      */
     R<TaskResDTO> getTask(String task_id);
-//
-//    /**
-//     * 获取指定用户的任务列表
-//     */
-//    <T> ReturnStatus<T> getTaskByUserIdAndStatus(String user_id, int statusList);
-//
-//
-//    /**
-//     * 占据任务
-//     */
-//    <T> ReturnStatus<T> holdTask(String taskType, int status, int limit);
+
+    /**
+     * 占据任务
+     */
+    R<TaskResDTO> holdTask(String taskType, int status, int limit);
+
+    /**
+     * 更改任务信息
+     */
+    R setTask(TaskSetReqDTO asyncTaskSetRequest);
+
+    /**
+     * 获取指定用户的任务列表
+     */
+    R getUserTaskList(String user_id, int statusList);
+
+
 }
 

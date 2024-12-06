@@ -50,6 +50,34 @@
                 now(),
                 now())
     </insert>
+    <!--TODO 学习Mybatis-->
+    <update id="updateStatusBatch">
+        update ${tableName} set status = #{status}, modify_time = now()
+        where task_id in
+        <foreach collection="taskIds" item="taskId" index="index"
+                 open="(" close=")" separator=",">
+            #{taskId}
+        </foreach>
+    </update>
+    <update id="updateTask" parameterType="">
+        update ${tableName}
+        set user_id = #{taskEntity.user_id},
+            task_stage = #{taskEntity.task_stage},
+            status = #{taskEntity.status},
+            crt_retry_num = #{taskEntity.crt_retry_num},
+            max_retry_num = #{taskEntity.max_retry_num},
+            max_retry_interval = #{taskEntity.max_retry_interval},
+            schedule_log = #{taskEntity.schedule_log},
+            task_context = #{taskEntity.task_context},
+            create_time = #{taskEntity.create_time},
+            modify_time = now(),
+            order_time = #{taskEntity.order_time}
+        where task_id = #{taskEntity.task_id}
+        and status not in
+            <foreach collection="statusList" item="status" index="index" open="(" close=")" separator=",">
+                #{status}
+            </foreach>
+    </update>
     <select id="getTaskList" resultMap="resultMap">
         select *
         from ${tableName}
@@ -62,6 +90,15 @@
         select *
         from ${tableName}
         where task_id = #{task_id}
+    </select>
+    <select id="getTaskByUseridAndStatus" resultMap="resultMap">
+        select *
+        from ${tableName}
+        where user_id = #{user_id}
+        and status in
+        <foreach collection="statusList" item="status" index="index" open="(" close=")" separator=",">
+            #{status}
+        </foreach>
     </select>
 
 

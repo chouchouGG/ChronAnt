@@ -1,6 +1,7 @@
 package cn.uhoc.infra.persistent.po;
 
 
+import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 import lombok.Data;
 
 @Data
@@ -66,4 +67,21 @@ public class Task {
      *
      */
     private Long modifyTime;
+
+    public static TaskEntity toEntity(Task task) {
+        return TaskEntity.builder()
+                .userId(task.userId)
+                .taskId(task.taskId)
+                .taskType(task.taskType)
+                .taskStage(task.taskStage)
+                .status(task.status)
+                .crtRetryNum(task.crtRetryNum)
+                .maxRetryNum(task.maxRetryNum)
+                .orderTime(task.orderTime)
+                .priority(task.priority)
+                .maxRetryInterval(task.maxRetryInterval)
+                .scheduleLog(task.scheduleLog)
+                .taskContext(task.taskContext)
+                .build();
+    }
 }

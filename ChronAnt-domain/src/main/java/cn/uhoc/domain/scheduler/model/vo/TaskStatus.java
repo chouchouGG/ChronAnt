@@ -13,6 +13,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum TaskStatus {
 
+    // 如果任务状态为 0x0c，等价于二进制的 1100，代表成功（SUCCESS）和失败（FAIL）。
     PENDING(0x01, "Pending Execution"),
     EXECUTING(0x02, "Executing"),
     SUCCESS(0x04, "Execution Successful"),
@@ -40,5 +41,14 @@ public enum TaskStatus {
                 .filter(ts -> ts.status == status)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown status: " + status));
+    }
+
+    public static boolean IsValidStatus(int status) {
+        for (TaskStatus taskStatus : TaskStatus.values()) {
+            if (status == taskStatus.getStatus()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
