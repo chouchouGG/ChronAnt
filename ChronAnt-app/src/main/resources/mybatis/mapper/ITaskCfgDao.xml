@@ -13,10 +13,26 @@
         <result column="create_time" property="createTime"/>
         <result column="modify_time" property="modifyTime"/>
     </resultMap>
+    <update id="save" parameterType="cn.uhoc.infra.persistent.po.TaskCfg">
+        insert into `t_schedule_cfg`(`task_type`,
+                                     `schedule_limit`,
+                                     `schedule_interval`,
+                                     `max_processing_time`,
+                                     `max_retry_num`,
+                                     `retry_interval`,
+                                     `create_time`,
+                                     `modify_time`)
+        VALUES (#{taskType}, #{scheduleLimit}, #{scheduleInterval}, #{maxProcessingTime},
+                #{maxRetryNum}, #{retryInterval}, now(), now())
+    </update>
     <select id="getTaskConfigByType" resultMap="resultMap">
         SELECT *
         FROM `t_schedule_cfg`
-        where task_type = #{task_type}
+        where task_type = #{taskType}
+    </select>
+    <select id="getTaskTypeCfgList" resultMap="resultMap">
+        select *
+        from `t_schedule_cfg`
     </select>
 
 </mapper>

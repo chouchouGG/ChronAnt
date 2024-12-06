@@ -35,18 +35,18 @@
                                   `task_context`,
                                   `create_time`,
                                   `modify_time`)
-        VALUES (#{taskEntity.user_id},
-                #{taskEntity.task_id},
-                #{taskEntity.task_type},
-                #{taskEntity.task_stage},
+        VALUES (#{taskEntity.userId},
+                #{taskEntity.taskId},
+                #{taskEntity.taskType},
+                #{taskEntity.taskStage},
                 #{taskEntity.status},
-                #{taskEntity.crt_retry_num},
-                #{taskEntity.max_retry_num},
+                #{taskEntity.crtRetryNum},
+                #{taskEntity.maxRetryNum},
                 now(),
                 #{taskEntity.priority},
-                #{taskEntity.max_retry_interval},
-                #{taskEntity.schedule_log},
-                #{taskEntity.task_context},
+                #{taskEntity.maxRetryInterval},
+                #{taskEntity.scheduleLog},
+                #{taskEntity.taskContext},
                 now(),
                 now())
     </insert>
@@ -59,20 +59,20 @@
             #{taskId}
         </foreach>
     </update>
-    <update id="updateTask" parameterType="">
+    <update id="updateTask">
         update ${tableName}
-        set user_id = #{taskEntity.user_id},
-            task_stage = #{taskEntity.task_stage},
+        set user_id = #{taskEntity.userId},
+            task_stage = #{taskEntity.taskStage},
             status = #{taskEntity.status},
-            crt_retry_num = #{taskEntity.crt_retry_num},
-            max_retry_num = #{taskEntity.max_retry_num},
-            max_retry_interval = #{taskEntity.max_retry_interval},
-            schedule_log = #{taskEntity.schedule_log},
-            task_context = #{taskEntity.task_context},
-            create_time = #{taskEntity.create_time},
+            crt_retry_num = #{taskEntity.crtRetryNum},
+            max_retry_num = #{taskEntity.maxRetryNum},
+            max_retry_interval = #{taskEntity.maxRetryInterval},
+            schedule_log = #{taskEntity.scheduleLog},
+            task_context = #{taskEntity.taskContext},
+            create_time = #{taskEntity.createTime},
             modify_time = now(),
-            order_time = #{taskEntity.order_time}
-        where task_id = #{taskEntity.task_id}
+            order_time = #{taskEntity.orderTime}
+        where task_id = #{taskEntity.taskId}
         and status not in
             <foreach collection="statusList" item="status" index="index" open="(" close=")" separator=",">
                 #{status}
@@ -89,12 +89,12 @@
     <select id="getTaskById" resultMap="resultMap">
         select *
         from ${tableName}
-        where task_id = #{task_id}
+        where task_id = #{taskId}
     </select>
     <select id="getTaskByUseridAndStatus" resultMap="resultMap">
         select *
         from ${tableName}
-        where user_id = #{user_id}
+        where user_id = #{userId}
         and status in
         <foreach collection="statusList" item="status" index="index" open="(" close=")" separator=",">
             #{status}

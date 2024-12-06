@@ -8,10 +8,13 @@ import cn.uhoc.infra.persistent.dao.ITaskCfgDao;
 import cn.uhoc.infra.persistent.dao.ITaskDao;
 import cn.uhoc.infra.persistent.dao.ITaskPosDao;
 import cn.uhoc.infra.persistent.po.Task;
+import cn.uhoc.infra.persistent.po.TaskCfg;
+import cn.uhoc.trigger.api.dto.TaskCfgDTO;
 import cn.uhoc.type.enums.ExceptionStatus;
 import cn.uhoc.type.exception.E;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -107,5 +110,25 @@ public class TaskRepository implements ITaskRepository {
     @Override
     public void updateTask(TaskEntity taskEntity, List<Integer> list, String tableName) {
         taskDao.updateTask(taskEntity, list, tableName);
+    }
+
+    @Override
+    public List<TaskCfgEntity> getTaskTypeCfgList() {
+        List<TaskCfg> taskTypeCfgList = taskCfgDao.getTaskTypeCfgList();
+        if (CollectionUtils.isEmpty(taskTypeCfgList)) {
+            log.warn("未从表中获取到任务配置");
+            throw new E(ExceptionStatus.ERR_GET_TASK_CFG);
+        }
+        return taskTypeCfgList.stream().map(TaskCfg::toEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public void save(TaskCfgEntity taskCfgEntity) {
+        TaskCfg taskCfg = TaskCfg.fromEntity(taskCfgEntity);
+        int e = taskCfgDao.save(taskCfg);
+        if (0 == e) {
+            log.warn("新增任务配置失败");
+            throw new E(ExceptionStatus.ERR_SET_TASK_CFG);
+        }
     }
 }

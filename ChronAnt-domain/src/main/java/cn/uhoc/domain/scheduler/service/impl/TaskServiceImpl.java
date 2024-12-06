@@ -12,7 +12,6 @@ import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
 import cn.uhoc.type.common.Utils;
 import cn.uhoc.type.enums.ExceptionStatus;
 import cn.uhoc.type.exception.E;
-import cn.uhoc.type.model.R;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

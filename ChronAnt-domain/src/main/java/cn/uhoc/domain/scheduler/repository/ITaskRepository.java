@@ -3,6 +3,7 @@ package cn.uhoc.domain.scheduler.repository;
 import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 import cn.uhoc.domain.scheduler.model.entity.TaskPosEntity;
+import cn.uhoc.trigger.api.dto.TaskCfgDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -34,4 +35,8 @@ public interface ITaskRepository {
     void updateStatusBatch(String tableName, List<String> taskIds, int status);
 
     void updateTask(TaskEntity taskEntity, List<Integer> list, String tableName);
+
+    List<TaskCfgEntity> getTaskTypeCfgList();
+
+    void save(TaskCfgEntity taskCfgEntity);
 }

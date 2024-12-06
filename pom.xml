@@ -72,25 +72,25 @@
             <version>3.9</version>
             <!-- Apache Commons Lang3，提供增强的 Java 核心类工具，如字符串、数组、对象处理工具等 -->
         </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version>
-            <!-- MapStruct 核心库，用于在 Java 代码中实现 POJO（Plain Old Java Object）之间的自动映射。
-                 - 支持从一个对象映射到另一个对象
-                 - 提高转换逻辑的效率，减少样板代码
-                 - 适用于 DTO、Entity、VO 等之间的转换 -->
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.5.Final</version>
-            <scope>provided</scope>
-            <!-- MapStruct 编译器注解处理器，用于在编译时生成映射实现类。
-                 - 自动根据注解生成映射方法的实现代码
-                 - 此依赖为 MapStruct 的代码生成提供支持
-                 - 需要设置 scope 为 provided，因为仅在编译阶段需要 -->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.mapstruct</groupId>-->
+<!--            <artifactId>mapstruct</artifactId>-->
+<!--            <version>1.5.5.Final</version>-->
+<!--            &lt;!&ndash; MapStruct 核心库，用于在 Java 代码中实现 POJO（Plain Old Java Object）之间的自动映射。-->
+<!--                 - 支持从一个对象映射到另一个对象-->
+<!--                 - 提高转换逻辑的效率，减少样板代码-->
+<!--                 - 适用于 DTO、Entity、VO 等之间的转换 &ndash;&gt;-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.mapstruct</groupId>-->
+<!--            <artifactId>mapstruct-processor</artifactId>-->
+<!--            <version>1.5.5.Final</version>-->
+<!--            <scope>provided</scope>-->
+<!--            &lt;!&ndash; MapStruct 编译器注解处理器，用于在编译时生成映射实现类。-->
+<!--                 - 自动根据注解生成映射方法的实现代码-->
+<!--                 - 此依赖为 MapStruct 的代码生成提供支持-->
+<!--                 - 需要设置 scope 为 provided，因为仅在编译阶段需要 &ndash;&gt;-->
+<!--        </dependency>-->
 
     </dependencies>
 

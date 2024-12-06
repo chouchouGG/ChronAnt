@@ -1,8 +1,11 @@
 package cn.uhoc.infra.persistent.po;
 
+import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class TaskCfg {
 
     /**
@@ -37,4 +40,26 @@ public class TaskCfg {
      *
      */
     private Long modifyTime;
+
+    public static TaskCfgEntity toEntity(TaskCfg taskCfg) {
+        return TaskCfgEntity.builder()
+                .taskType(taskCfg.getTaskType())
+                .scheduleLimit(taskCfg.getScheduleLimit())
+                .scheduleInterval(taskCfg.getScheduleInterval())
+                .maxProcessingTime(taskCfg.getMaxProcessingTime())
+                .maxRetryNum(taskCfg.getMaxRetryNum())
+                .retryInterval(taskCfg.getRetryInterval())
+                .build();
+    }
+
+    public static TaskCfg fromEntity(TaskCfgEntity taskCfgEntity) {
+        return TaskCfg.builder()
+                .taskType(taskCfgEntity.getTaskType())
+                .scheduleLimit(taskCfgEntity.getScheduleLimit())
+                .scheduleInterval(taskCfgEntity.getScheduleInterval())
+                .maxProcessingTime(taskCfgEntity.getMaxProcessingTime())
+                .maxRetryNum(taskCfgEntity.getMaxRetryNum())
+                .retryInterval(taskCfgEntity.getRetryInterval())
+                .build();
+    }
 }

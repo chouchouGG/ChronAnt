@@ -1,5 +1,7 @@
 package cn.uhoc.domain.scheduler.model.entity;
 
+import cn.uhoc.trigger.api.dto.TaskCfgDTO;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,6 +11,7 @@ import lombok.Data;
  * @create: 2024-12-01 19:59
  **/
 @Data
+@Builder
 public class TaskCfgEntity {
 
     /**
@@ -35,4 +38,15 @@ public class TaskCfgEntity {
      * 重试间隔
      */
     private Integer retryInterval;
+
+    public static TaskCfgEntity fromDTO(TaskCfgDTO taskCfgDTO) {
+        return TaskCfgEntity.builder()
+                .taskType(taskCfgDTO.getTaskType())
+                .scheduleLimit(taskCfgDTO.getScheduleLimit())
+                .scheduleInterval(taskCfgDTO.getScheduleInterval())
+                .maxProcessingTime(taskCfgDTO.getMaxProcessingTime())
+                .maxRetryNum(taskCfgDTO.getMaxRetryNum())
+                .retryInterval(taskCfgDTO.getRetryInterval())
+                .build();
+    }
 }

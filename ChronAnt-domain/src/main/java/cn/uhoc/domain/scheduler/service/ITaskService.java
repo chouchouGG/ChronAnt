@@ -3,9 +3,7 @@ package cn.uhoc.domain.scheduler.service;
 
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 import cn.uhoc.trigger.api.dto.TaskCreateReqDTO;
-import cn.uhoc.trigger.api.dto.TaskResDTO;
 import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
-import cn.uhoc.type.model.R;
 
 import java.util.List;
 

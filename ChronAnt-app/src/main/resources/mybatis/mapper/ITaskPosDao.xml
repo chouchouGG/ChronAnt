@@ -13,6 +13,6 @@
     <select id="getTaskPositionByType" resultMap="resultMap">
         select *
         from t_schedule_pos
-        where task_type = #{task_type}
+        where task_type = #{taskType}
     </select>
 </mapper>

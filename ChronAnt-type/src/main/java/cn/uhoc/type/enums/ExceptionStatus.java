@@ -25,6 +25,7 @@ public enum ExceptionStatus {
     ERR_CREATE_TASK(8037, "create task failed"),
     ERR_GET_TASK_LIST(8038, "get task list failed"),
     ERR_GET_TASK_CFG(8039, "get task config failed"),
+    ERR_SET_TASK_CFG(8047, "set task config failed"),
 //    ERR_INCREASE_CRT_RETRY_NUM(8040, "set task failed"),
     ERR_SET_TASK(8041, "increase crt retry num failed"),
     /**
@@ -34,7 +35,6 @@ public enum ExceptionStatus {
 //    ERR_GET_PROCESSING_COUNT(8043, "get processing count failed"),
 //    ERR_SET_USER_PRIORITY(8045, "set user priority failed"),
 //    ERR_GET_TASK_CFG_FROM_DB(8046, "get task cfg failed"),
-//    ERR_SET_TASK_CFG_FROM_DB(8047, "set task cfg failed")
     ;
 
 

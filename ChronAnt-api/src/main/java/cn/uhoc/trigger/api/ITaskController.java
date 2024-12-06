@@ -31,7 +31,7 @@ public interface ITaskController {
     /**
      * 获取单个任务
      */
-    R<TaskResDTO> getTask(String task_id);
+    R<TaskResDTO> getTask(String taskId);
 
     /**
      * 占据任务
@@ -41,12 +41,12 @@ public interface ITaskController {
     /**
      * 更改任务信息
      */
-    R setTask(TaskSetReqDTO asyncTaskSetRequest);
+    R setTask(TaskSetReqDTO taskSetReqDTO);
 
     /**
      * 获取指定用户的任务列表
      */
-    R getUserTaskList(String user_id, int statusList);
+    R getUserTaskList(String userId, int statusList);
 
 
 }

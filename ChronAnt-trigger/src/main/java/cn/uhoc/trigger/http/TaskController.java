@@ -2,16 +2,15 @@ package cn.uhoc.trigger.http;
 
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 import cn.uhoc.domain.scheduler.model.vo.TaskStatus;
+import cn.uhoc.domain.scheduler.service.ITaskCfgService;
 import cn.uhoc.domain.scheduler.service.ITaskService;
 import cn.uhoc.trigger.api.ITaskController;
-import cn.uhoc.trigger.api.dto.TaskCreateReqDTO;
-import cn.uhoc.trigger.api.dto.TaskCreateResDTO;
-import cn.uhoc.trigger.api.dto.TaskResDTO;
-import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
+import cn.uhoc.trigger.api.dto.*;
 import cn.uhoc.type.enums.ExceptionStatus;
 import cn.uhoc.type.model.R;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -33,6 +32,9 @@ public class TaskController implements ITaskController {
 
     @Resource
     private ITaskService taskService;
+
+    @Resource
+    private ITaskCfgService taskCfgService;
 
     @PostMapping("/create_task")
     @Override
@@ -104,6 +106,19 @@ public class TaskController implements ITaskController {
         return new R(taskResDTOs);
     }
 
+    @GetMapping("/cfg/list")
+    public R getTaskTypeCfgList() {
+        return new R(taskCfgService.getTaskTypeCfgList());
+    }
 
+    @GetMapping("/cfg/configuration")
+    public R SetTaskCFG(@RequestBody TaskCfgDTO taskCfgDTO) {
+        if (StringUtils.isNotBlank(taskCfgDTO.getTaskType())) {
+            log.error("input invalid");
+            return new R(ExceptionStatus.ERR_INPUT_INVALID);
+        }
+        taskCfgService.save(taskCfgDTO);
+        return new R(ExceptionStatus.SUCCESS);
+    }
 
 }
