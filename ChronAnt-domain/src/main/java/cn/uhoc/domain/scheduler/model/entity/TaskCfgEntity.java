@@ -19,23 +19,23 @@ public class TaskCfgEntity {
      */
     private String taskType;
     /**
-     * 一次拉取多少个任务
+     * 任务一次性调度（拉取）的数量
      */
     private Integer scheduleLimit;
     /**
-     *
+     * 任务调度（拉取）时间间隔
      */
     private Integer scheduleInterval;
     /**
-     * 处于执行中的最大时间
+     * 该任务执行耗时的上限：是一个兜底值，这个时间是由业务方进行预估的，这个时间要尽量避免一个任务还处于正常执行中就被判定为异常的情况。
      */
     private Integer maxProcessingTime;
     /**
-     * 最大重试次数
+     * 任务执行失败时重试的最大次数
      */
     private Integer maxRetryNum;
     /**
-     * 重试间隔
+     * 重试间隔：重试间隔渐进式增加（翻倍），如果重试间隔为5s，则第一次重试间隔5s，第二次重试间隔10s，第三次15s...
      */
     private Integer retryInterval;
 
