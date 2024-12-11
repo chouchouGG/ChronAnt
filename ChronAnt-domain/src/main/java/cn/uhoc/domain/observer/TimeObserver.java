@@ -1,20 +1,13 @@
 package cn.uhoc.domain.observer;
 
 import cn.uhoc.domain.executor.model.entity.TaskBaseEntity;
-import cn.uhoc.domain.executor.model.entity.TaskSetStageEntity;
-import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
-import cn.uhoc.domain.scheduler.model.vo.TaskStatus;
 import cn.uhoc.domain.scheduler.service.ITaskService;
-import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
-import cn.uhoc.type.common.ReflectionUtils;
 import cn.uhoc.type.common.UserConfig;
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 观察者

@@ -1,8 +1,6 @@
 package cn.uhoc.domain.observer;
 
 import cn.uhoc.domain.executor.model.entity.TaskBaseEntity;
-import cn.uhoc.domain.executor.model.entity.TaskSetStageEntity;
-import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 
 import java.util.List;
