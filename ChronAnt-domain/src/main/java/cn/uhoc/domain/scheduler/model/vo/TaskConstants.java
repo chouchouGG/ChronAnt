@@ -12,4 +12,12 @@ public class TaskConstants {
 
     // 默认的任务阶段调度日志上下文
     public static final String DEFAULT_TASK_STAGE_SCHEDULE_LOG_CONTEXT = "";
+
+    public final static int DEFAULT_TIME_INTERVAL = 20;
+    public final static int MAX_ERR_MSG_LEN = 256;
+    private final static int SCHEDULE_LIMIT = 10;
+    private final static int SCHEDULE_INTERVAL = 10;
+    private final static int MAX_PROCESSING_TIME = 60;
+    private final static int MAX_RETRY_NUM = 5;
+    private final static int RETRY_INTERVAL = 10;
 }

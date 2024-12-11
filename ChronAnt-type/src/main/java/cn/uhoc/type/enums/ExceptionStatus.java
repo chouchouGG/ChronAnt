@@ -35,6 +35,9 @@ public enum ExceptionStatus {
 //    ERR_GET_PROCESSING_COUNT(8043, "get processing count failed"),
 //    ERR_SET_USER_PRIORITY(8045, "set user priority failed"),
 //    ERR_GET_TASK_CFG_FROM_DB(8046, "get task cfg failed"),
+
+
+    NO_CLASS_FOR_TASK_TYPE(8047,"Task type not found"),
     ;
 
 

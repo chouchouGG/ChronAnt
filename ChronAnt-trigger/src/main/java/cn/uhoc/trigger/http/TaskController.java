@@ -1,5 +1,6 @@
 package cn.uhoc.trigger.http;
 
+import cn.uhoc.domain.convertor.TaskConverter;
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 import cn.uhoc.domain.scheduler.model.vo.TaskStatus;
 import cn.uhoc.domain.scheduler.service.ITaskCfgService;
@@ -10,7 +11,6 @@ import cn.uhoc.type.enums.ExceptionStatus;
 import cn.uhoc.type.model.R;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -54,8 +54,9 @@ public class TaskController implements ITaskController {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
-        TaskResDTO taskResDTO = taskService.getTask(taskId).toDTO();
-        return new R(taskResDTO);
+        TaskEntity task = taskService.getTask(taskId);
+        TaskResDTO taskDTO = TaskConverter.toDTO(task);
+        return new R(taskDTO);
     }
 
     @GetMapping("/get_task_list")
@@ -67,7 +68,7 @@ public class TaskController implements ITaskController {
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
         List<TaskEntity> taskEntityList = taskService.getTaskList(taskType, status, limit);
-        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskEntity::toDTO).collect(Collectors.toList());
+        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
         return new R(taskResDTOs);
     }
 
@@ -79,7 +80,7 @@ public class TaskController implements ITaskController {
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
         List<TaskEntity> taskEntityList = taskService.holdTask(taskType, status, limit);
-        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskEntity::toDTO).collect(Collectors.toList());
+        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
         return new R(taskResDTOs);
     }
 
@@ -102,7 +103,7 @@ public class TaskController implements ITaskController {
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
         List<TaskEntity> taskEntityList = taskService.getTaskByUserIdAndStatus(userId, statusList);
-        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskEntity::toDTO).collect(Collectors.toList());
+        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
         return new R(taskResDTOs);
     }
 

@@ -9,7 +9,7 @@ import cn.uhoc.domain.scheduler.repository.ITaskRepository;
 import cn.uhoc.domain.scheduler.service.ITaskService;
 import cn.uhoc.trigger.api.dto.TaskCreateReqDTO;
 import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
-import cn.uhoc.type.common.Utils;
+import cn.uhoc.type.common.SnowFlake;
 import cn.uhoc.type.enums.ExceptionStatus;
 import cn.uhoc.type.exception.E;
 import lombok.extern.slf4j.Slf4j;
@@ -174,12 +174,6 @@ public class TaskServiceImpl implements ITaskService {
 
     /**
      * 构建任务实体对象
-     *
-     * @param userId      用户id
-     * @param taskType    任务类型
-     * @param taskPos     任务位置
-     * @param taskTypeCfg 任务配置
-     * @return 任务实体
      */
     private TaskEntity buildTaskModel(TaskCreateReqDTO taskCreateReqDTO, TaskPosEntity taskPos, TaskCfgEntity taskTypeCfg) {
         String taskId = getTaskId(taskCreateReqDTO.getTaskType(), taskPos);
@@ -199,10 +193,6 @@ public class TaskServiceImpl implements ITaskService {
 
     /**
      * 构建新建的任务待插入的数据库表名
-     *
-     * @param taskType 任务类型
-     * @param pos      任务位置
-     * @return 表名
      */
     private String getTableName(String taskType, int pos) {
         return "task_" + taskType.toLowerCase() + "_" + pos;
@@ -216,7 +206,7 @@ public class TaskServiceImpl implements ITaskService {
      * @return 任务id
      */
     private String getTaskId(String taskType, TaskPosEntity taskPos) {
-        return Utils.getTaskId() + "_" + taskType + "_" + taskPos.getScheduleEndPos();
+        return SnowFlake.nextId() + "_" + taskType + "_" + taskPos.getScheduleEndPos();
     }
 
     /**
