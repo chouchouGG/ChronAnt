@@ -1,8 +1,10 @@
 package cn.uhoc.trigger.api.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class TaskSetReqDTO {
 
     private String taskId; // NOT NULL DEFAULT '',

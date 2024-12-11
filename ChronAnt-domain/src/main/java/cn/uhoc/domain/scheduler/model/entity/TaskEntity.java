@@ -1,7 +1,5 @@
 package cn.uhoc.domain.scheduler.model.entity;
 
-import cn.uhoc.domain.scheduler.model.vo.TaskConstants;
-import cn.uhoc.trigger.api.dto.TaskResDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

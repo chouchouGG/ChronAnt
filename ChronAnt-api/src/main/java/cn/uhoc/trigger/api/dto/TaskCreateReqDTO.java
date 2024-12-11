@@ -1,8 +1,10 @@
 package cn.uhoc.trigger.api.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class TaskCreateReqDTO {
 
     private String userId;
