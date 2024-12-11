@@ -43,7 +43,7 @@ CREATE TABLE `t_schedule_cfg`
 
 insert into t_schedule_cfg(task_type, schedule_limit, schedule_interval, max_processing_time,
                            max_retry_num, retry_interval)
-values ('Lark', 100, 10, 30, 3, 10);
+values ('test.Lark', 100, 10, 30, 3, 10);
 
 CREATE TABLE `t_schedule_pos`
 (
