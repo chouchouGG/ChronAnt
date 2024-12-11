@@ -3,7 +3,7 @@ package cn.uhoc.type.common;
 /**
  * 雪花算法，用于生成任务ID
  */
-class SnowFlake {
+public class SnowFlake {
 
     // TODO 学习雪花算法
 
