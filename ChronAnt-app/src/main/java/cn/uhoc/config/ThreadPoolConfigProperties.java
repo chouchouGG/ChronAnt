@@ -13,11 +13,11 @@ public class ThreadPoolConfigProperties {
     /** 最大线程数 */
     private Integer maxPoolSize = 200;
 
-    /** 最大等待时间 */
-    private Long keepAliveTime = 10L;
+    /** 最大存活时间 */
+    private Long keepAliveTime = 100L;
 
     /** 最大队列数 */
-    private Integer blockQueueSize = 5000;
+    private Integer blockQueueSize = 10000;
 
     /*
      * AbortPolicy：丢弃任务并抛出RejectedExecutionException异常。

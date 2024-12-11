@@ -7,24 +7,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.util.NavigableMap;
 import java.util.concurrent.*;
 
 @Slf4j
 @EnableAsync
-@Configuration
-@EnableConfigurationProperties(ThreadPoolConfigProperties.class)
+@Configuration // 标记一个类作为 Java 配置类
+@EnableConfigurationProperties({ThreadPoolConfigProperties.class, AsyncTaskWithMultiStageConfig.class})
 public class ThreadPoolConfig {
 
     @Bean
     @ConditionalOnMissingBean(ThreadPoolExecutor.class)
-    public ThreadPoolExecutor threadPoolExecutor(ThreadPoolConfigProperties properties) {
+    public ThreadPoolExecutor threadPoolExecutor(ThreadPoolConfigProperties baseThreadPoolProperties, AsyncTaskWithMultiStageConfig taskWithMultiStageConfig) {
         // TODO 学习线程池的常见拒绝策略
         // 实例化拒绝策略
         RejectedExecutionHandler handler;
-        switch (properties.getPolicy()) {
-            case "AbortPolicy":
-                handler = new ThreadPoolExecutor.AbortPolicy();
-                break;
+        switch (baseThreadPoolProperties.getPolicy()) {
             case "DiscardPolicy":
                 handler = new ThreadPoolExecutor.DiscardPolicy();
                 break;
@@ -34,18 +32,30 @@ public class ThreadPoolConfig {
             case "CallerRunsPolicy":
                 handler = new ThreadPoolExecutor.CallerRunsPolicy();
                 break;
+            case "AbortPolicy":
             default:
                 handler = new ThreadPoolExecutor.AbortPolicy();
                 break;
         }
 
+        Long keepAliveTime = taskWithMultiStageConfig.getKeepAliveTimeForExecuteTaskThreadPool() == 0
+                ? baseThreadPoolProperties.getKeepAliveTime() : taskWithMultiStageConfig.getKeepAliveTimeForExecuteTaskThreadPool();
+        Integer corePoolSize = taskWithMultiStageConfig.getCoreConcurrentRunTimesForExecuteTaskThreadPool() == 0
+                ? baseThreadPoolProperties.getCorePoolSize() : taskWithMultiStageConfig.getCoreConcurrentRunTimesForExecuteTaskThreadPool();
+        Integer maxPoolSize = taskWithMultiStageConfig.getMaxConcurrentRunTimesForExecuteTaskThreadPool() == 0
+                ? baseThreadPoolProperties.getMaxPoolSize() : taskWithMultiStageConfig.getMaxConcurrentRunTimesForExecuteTaskThreadPool();
+
+
+        // TODO 给线程池其他参数也应该增加用户可以配置的属性？
+
+
         // 创建线程池
         return new ThreadPoolExecutor(
-                properties.getCorePoolSize(),
-                properties.getMaxPoolSize(),
-                properties.getKeepAliveTime(),
+                corePoolSize,
+                maxPoolSize,
+                keepAliveTime,
                 TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(properties.getBlockQueueSize()),
+                new LinkedBlockingQueue<>(baseThreadPoolProperties.getBlockQueueSize()),
                 Executors.defaultThreadFactory(),
                 handler
         );
