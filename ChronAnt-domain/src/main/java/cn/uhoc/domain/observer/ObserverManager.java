@@ -1,8 +1,9 @@
 package cn.uhoc.domain.observer;
 
+import cn.uhoc.type.common.ReflectionUtils;
+import cn.uhoc.type.exception.ReflectionException;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,13 +31,14 @@ public class ObserverManager {
     /**
      * 通过反射找到对应的方法执行
      */
-    public void wakeupObserver(ObserverTypeEnum observerTypeEnum, Object... params) throws InvocationTargetException, IllegalAccessException {
+    public void wakeupObserver(ObserverTypeEnum observerTypeEnum, Object... params) {
         // 查找并调用对应的观察者方法
         for (IObserver observer : observers) {
             Method method = observerMethods.get(observerTypeEnum);
-            if (method != null) {
-                // 使用反射调用方法
-                method.invoke(observer, params);
+            try {
+                ReflectionUtils.doInvokeMethod(observer, method, params);
+            } catch (ReflectionException e) {
+                throw new RuntimeException(e);
             }
         }
     }

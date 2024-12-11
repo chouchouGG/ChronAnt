@@ -11,14 +11,14 @@ public interface IObserver {
 
     void onBoot();
 
-    void onObtain(List<TaskEntity> taskEntityList, List<TaskBaseEntity> taskBaseEntityList);
+    void onObtain(List<TaskEntity> taskEntityList);
 
     void onExecute(TaskBaseEntity taskBaseEntity);
 
-    void onFinish(TaskBaseEntity taskBaseEntity, TaskSetStageEntity taskSetStageEntity, Class<?> aClass);
+    void onFinish(TaskBaseEntity taskBaseEntity);
 
     void onStop(TaskBaseEntity taskBaseEntity);
 
-    void onError(TaskBaseEntity taskBaseEntity, TaskCfgEntity taskCfgEntity, List<TaskBaseEntity> taskBaseEntityList, Class<?> aClass, Exception e);
+    void onError(TaskBaseEntity taskBaseEntity, Exception e);
 
 }
