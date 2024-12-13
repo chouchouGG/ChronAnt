@@ -1,12 +1,10 @@
 package cn.uhoc.trigger.api;
 
-import cn.uhoc.trigger.api.dto.TaskCreateReqDTO;
-import cn.uhoc.trigger.api.dto.TaskCreateResDTO;
-import cn.uhoc.trigger.api.dto.TaskResDTO;
-import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
+import cn.uhoc.trigger.api.dto.TaskCreateReq;
+import cn.uhoc.trigger.api.dto.TaskCreateRes;
+import cn.uhoc.trigger.api.dto.TaskRes;
+import cn.uhoc.trigger.api.dto.TaskSetReq;
 import cn.uhoc.type.model.R;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -21,27 +19,27 @@ public interface ITaskController {
     /**
      * 创建任务
      */
-    R<TaskCreateResDTO> createTask(TaskCreateReqDTO taskCreateReqDTO);
+    R<TaskCreateRes> createTask(TaskCreateReq taskCreateReq);
 
     /**
      * 获取任务列表
      */
-    R<List<TaskResDTO>> getTaskList(String taskType, int status, int limit);
+    R<List<TaskRes>> getTaskList(String taskType, int status, int limit);
 
     /**
      * 获取单个任务
      */
-    R<TaskResDTO> getTask(String taskId);
+    R<TaskRes> getTask(String taskId);
 
     /**
      * 占据任务
      */
-    R<TaskResDTO> holdTask(String taskType, int status, int limit);
+    R<TaskRes> holdTask(String taskType, int status, int limit);
 
     /**
      * 更改任务信息
      */
-    R setTask(TaskSetReqDTO taskSetReqDTO);
+    R setTask(TaskSetReq taskSetReq);
 
     /**
      * 获取指定用户的任务列表

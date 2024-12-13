@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <trees>
+     <tree path="/ChronAnt-infrastructure/src/main/java/cn/uhoc/infra/persistent/po/TaskCfg.java"
+           title="异步任务配置PO"/>
+     <tree path="/ChronAnt-infrastructure/src/main/java/cn/uhoc/infra/persistent/po/TaskPos.java"
+           title="异步任务位置PO"/>
+     <tree path="/ChronAnt-infrastructure/src/main/java/cn/uhoc/infra/persistent/po/Task.java" title="异步任务PO"/>
+     <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/scheduler" title="" extension=""
+           presentableText="" tooltipTitle="" icon="" textColor="" backgroundColor=""/>
+     <tree path="/ChronAnt-app/src/main/java/cn/uhoc/launcher" title="启动器"/>
+     <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/executor" title="执行器"/>
+     <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/observer" title="观察器"/>
+ </trees>

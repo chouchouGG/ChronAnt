@@ -15,7 +15,7 @@ public class AsyncTaskWithMultiStageConfig {
 
     // TODO 数据库进行更新任务类型配置后，隔一段间隔才会生效。
     // 循环更新任务类型配置的时间
-    private Long cycleUpdateScheduleTaskTypeConfigTime = 0L;
+    private Long cycleUpdateScheduleTaskTypeConfigTime = 60L;
 
     // 拉取任务的初始偏移
     private Integer initOffsetForScheduleTask = 0;

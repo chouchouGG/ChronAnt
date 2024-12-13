@@ -3,7 +3,7 @@ package cn.uhoc.trigger.api.dto;
 import lombok.Data;
 
 @Data
-public class TaskCfgDTO {
+public class TaskCfgReq {
 
     private String taskType;
 

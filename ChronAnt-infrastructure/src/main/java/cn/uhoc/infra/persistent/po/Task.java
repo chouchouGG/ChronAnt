@@ -20,7 +20,7 @@ public class Task {
      */
     private String taskId;
     /**
-     * 存储任务的全类名
+     * 存储任务的类型名
      */
     private String taskType;
     /**
@@ -30,27 +30,27 @@ public class Task {
     /**
      *
      */
-    private int status;
+    private Integer status;
     /**
      * 已经重试几次了
      */
-    private int crtRetryNum;
+    private Integer crtRetryNum;
     /**
      * 最大能重试几次
      */
-    private int maxRetryNum;
+    private Integer maxRetryNum;
     /**
      *
      */
-    private long orderTime;
+    private Long orderTime;
     /**
      *
      */
-    private int priority;
+    private Integer priority;
     /**
      * 最大重试间隔
      */
-    private int maxRetryInterval;
+    private Integer maxRetryInterval;
     /**
      * 调度信息记录
      */
@@ -68,20 +68,20 @@ public class Task {
      */
     private Long modifyTime;
 
-    public static TaskEntity toEntity(Task task) {
+    public TaskEntity toEntity() {
         return TaskEntity.builder()
-                .userId(task.userId)
-                .taskId(task.taskId)
-                .taskType(task.taskType)
-                .taskStage(task.taskStage)
-                .status(task.status)
-                .crtRetryNum(task.crtRetryNum)
-                .maxRetryNum(task.maxRetryNum)
-                .orderTime(task.orderTime)
-                .priority(task.priority)
-                .maxRetryInterval(task.maxRetryInterval)
-                .scheduleLog(task.scheduleLog)
-                .taskContext(task.taskContext)
+                .userId(this.userId)
+                .taskId(this.taskId)
+                .taskType(this.taskType)
+                .taskStage(this.taskStage)
+                .status(this.status)
+                .crtRetryNum(this.crtRetryNum)
+                .maxRetryNum(this.maxRetryNum)
+                .orderTime(this.orderTime)
+                .priority(this.priority)
+                .maxRetryInterval(this.maxRetryInterval)
+                .scheduleLog(this.scheduleLog)
+                .taskContext(this.taskContext)
                 .build();
     }
 }

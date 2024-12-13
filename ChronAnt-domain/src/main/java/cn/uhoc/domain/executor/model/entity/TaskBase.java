@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskBaseEntity {
+public class TaskBase {
 
     private String userId; //
 
@@ -22,20 +22,20 @@ public class TaskBaseEntity {
 
     private String taskStage; //
 
-    private int status;
+    private Integer status;
 
-    private int crtRetryNum;
+    private Integer crtRetryNum;
 
-    private int maxRetryNum;
+    private Integer maxRetryNum;
 
-    private long orderTime;
+    private Long orderTime;
 
-    private int priority;
+    private Integer priority;
 
-    private int maxRetryInterval;
+    private Integer maxRetryInterval;
 
-    private ScheduleLogEntity scheduleLog; //
+    private ScheduleLog scheduleLog; //
 
-    private TaskContextEntity taskContext; //
+    private TaskContext taskContext; //
 
 }

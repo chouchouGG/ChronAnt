@@ -11,6 +11,6 @@ import lombok.Data;
  **/
 @Data
 @Builder
-public class TaskCreateResDTO {
+public class TaskCreateRes {
     private String taskId;
 }

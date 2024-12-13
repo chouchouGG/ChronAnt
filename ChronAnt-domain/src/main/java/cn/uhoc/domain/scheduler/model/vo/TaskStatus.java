@@ -4,7 +4,8 @@ package cn.uhoc.domain.scheduler.model.vo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 任务状态
@@ -13,42 +14,67 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum TaskStatus {
 
-    // 如果任务状态为 0x0c，等价于二进制的 1100，代表成功（SUCCESS）和失败（FAIL）。
-    PENDING(0x01, "Pending Execution"),
-    EXECUTING(0x02, "Executing"),
-    SUCCESS(0x04, "Execution Successful"),
-    FAIL(0x08, "Execution Failed"),
+    PENDING(0x01, "待执行"),
+    EXECUTING(0x02, "执行中"),
+    SUCCESS(0x04, "执行成功"),
+    FAIL(0x08, "执行失败"),
     ;
 
     /**
      * 状态码
      */
-    private final int status;
+    private final int code;
     /**
      * 状态描述
      */
     private final String description;
 
-    /**
-     * 根据状态码查询枚举
-     *
-     * @param status 状态码
-     * @return 对应的 TaskStatus 枚举
-     */
-    public static TaskStatus fromStatus(int status) {
-        // values() 是一个 Java 枚举类原生提供的静态方法，用于返回该枚举中所有常量的数组。
-        return Arrays.stream(values())
-                .filter(ts -> ts.status == status)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown status: " + status));
+    public static String getErrMsg(TaskStatus taskStatus) {
+        switch (taskStatus) {
+            case PENDING:
+                return "Task waits processing...";
+            case EXECUTING:
+                return "Task in progress...";
+            case SUCCESS:
+                return "Task completed successfully.";
+            case FAIL:
+                return "Task execution failed: ";
+            default:
+                throw new IllegalArgumentException("Unhandled TaskStatus: " + taskStatus);
+        }
     }
 
-    public static boolean IsValidStatus(int status) {
-        for (TaskStatus taskStatus : TaskStatus.values()) {
-            if (status == taskStatus.getStatus()) {
-                return true;
-            }
+
+    /**
+     * 分解任务状态
+     *
+     * <p>如果任务状态为 0x0c，等价于二进制的 1100，代表成功（SUCCESS）和失败（FAIL）。</p>
+     * @param status 合并的状态
+     * @return 分解的状态列表
+     */
+    public static List<Integer> getStatusList(int status) {
+        List<Integer> statusList = new ArrayList<>();
+        while (status != 0) {
+            int cur = status & -status;
+            statusList.add(cur);
+            status ^= cur;
         }
-        return false;
+        return statusList;
     }
+
+    /**
+     * 合并任务状态
+     *
+     * <p>将多个状态值合并为一个状态</p>
+     * @param statusList 状态列表
+     * @return 合并后的状态值
+     */
+    public static int combineStatus(List<TaskStatus> statusList) {
+        int combinedStatus = 0;
+        for (TaskStatus status : statusList) {
+            combinedStatus |= status.getCode();
+        }
+        return combinedStatus;
+    }
+
 }

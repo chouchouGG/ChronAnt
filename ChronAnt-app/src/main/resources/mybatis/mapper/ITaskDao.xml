@@ -61,22 +61,41 @@
     </update>
     <update id="updateTask">
         update ${tableName}
-        set user_id = #{taskEntity.userId},
-            task_stage = #{taskEntity.taskStage},
-            status = #{taskEntity.status},
-            crt_retry_num = #{taskEntity.crtRetryNum},
-            max_retry_num = #{taskEntity.maxRetryNum},
-            max_retry_interval = #{taskEntity.maxRetryInterval},
-            schedule_log = #{taskEntity.scheduleLog},
-            task_context = #{taskEntity.taskContext},
-            create_time = #{taskEntity.createTime},
-            modify_time = now(),
-            order_time = #{taskEntity.orderTime}
+        <set>
+            <if test="taskEntity.taskStage != null and taskEntity.taskStage != ''">
+                task_stage = #{taskEntity.taskStage}
+            </if>
+            <if test="taskEntity.status != null">
+                status = #{taskEntity.status}
+            </if>
+            <if test="taskEntity.crtRetryNum != null">
+                crt_retry_num = #{taskEntity.crtRetryNum}
+            </if>
+            <if test="taskEntity.maxRetryNum != null">
+                max_retry_num = #{taskEntity.maxRetryNum}
+            </if>
+            <if test="taskEntity.priority != null">
+                priority = #{taskEntity.priority}
+            </if>
+            <if test="taskEntity.orderTime != null">
+                order_time = #{taskEntity.orderTime}
+            </if>
+            <if test="taskEntity.maxRetryInterval != null">
+                max_retry_interval = #{taskEntity.maxRetryInterval}
+            </if>
+            <if test="taskEntity.scheduleLog != null and taskEntity.scheduleLog != ''">
+                schedule_log = #{taskEntity.scheduleLog}
+            </if>
+            <if test="taskEntity.taskContext != null and taskEntity.taskContext != ''">
+                task_context = #{taskEntity.taskContext}
+            </if>
+            modify_time = now()
+        </set>
         where task_id = #{taskEntity.taskId}
         and status not in
-            <foreach collection="statusList" item="status" index="index" open="(" close=")" separator=",">
-                #{status}
-            </foreach>
+        <foreach collection="statusList" item="status" index="index" open="(" close=")" separator=",">
+            #{status}
+        </foreach>
     </update>
     <select id="getTaskList" resultMap="resultMap">
         select *

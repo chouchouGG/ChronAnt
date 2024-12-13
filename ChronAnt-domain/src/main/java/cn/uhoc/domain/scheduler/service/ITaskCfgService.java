@@ -1,7 +1,7 @@
 package cn.uhoc.domain.scheduler.service;
 
 import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
-import cn.uhoc.trigger.api.dto.TaskCfgDTO;
+import cn.uhoc.trigger.api.dto.TaskCfgReq;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface ITaskCfgService {
 
     /**
      * 新增任务配置项
-     * @param taskCfgDTO 任务类型配置DTO对象
+     * @param taskCfgReq 任务类型配置DTO对象
      */
-    void save(TaskCfgDTO taskCfgDTO);
+    void save(TaskCfgReq taskCfgReq);
 }

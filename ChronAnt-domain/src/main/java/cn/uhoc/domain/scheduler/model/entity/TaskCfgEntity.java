@@ -1,6 +1,6 @@
 package cn.uhoc.domain.scheduler.model.entity;
 
-import cn.uhoc.trigger.api.dto.TaskCfgDTO;
+import cn.uhoc.trigger.api.dto.TaskCfgReq;
 import lombok.Builder;
 import lombok.Data;
 
@@ -39,14 +39,14 @@ public class TaskCfgEntity {
      */
     private Integer retryInterval;
 
-    public static TaskCfgEntity fromDTO(TaskCfgDTO taskCfgDTO) {
+    public static TaskCfgEntity fromDTO(TaskCfgReq taskCfgReq) {
         return TaskCfgEntity.builder()
-                .taskType(taskCfgDTO.getTaskType())
-                .scheduleLimit(taskCfgDTO.getScheduleLimit())
-                .scheduleInterval(taskCfgDTO.getScheduleInterval())
-                .maxProcessingTime(taskCfgDTO.getMaxProcessingTime())
-                .maxRetryNum(taskCfgDTO.getMaxRetryNum())
-                .retryInterval(taskCfgDTO.getRetryInterval())
+                .taskType(taskCfgReq.getTaskType())
+                .scheduleLimit(taskCfgReq.getScheduleLimit())
+                .scheduleInterval(taskCfgReq.getScheduleInterval())
+                .maxProcessingTime(taskCfgReq.getMaxProcessingTime())
+                .maxRetryNum(taskCfgReq.getMaxRetryNum())
+                .retryInterval(taskCfgReq.getRetryInterval())
                 .build();
     }
 }

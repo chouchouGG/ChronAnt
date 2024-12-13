@@ -2,8 +2,8 @@ package cn.uhoc.domain.scheduler.service;
 
 
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
-import cn.uhoc.trigger.api.dto.TaskCreateReqDTO;
-import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
+import cn.uhoc.trigger.api.dto.TaskCreateReq;
+import cn.uhoc.trigger.api.dto.TaskSetReq;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface ITaskService {
      * 创建任务
      * @return 返回创建的任务的task_id
      */
-    String createTask(TaskCreateReqDTO taskCreateReqDTO);
+    String createTask(TaskCreateReq taskCreateReq);
 
     /**
      * 查询任务列表
@@ -43,9 +43,9 @@ public interface ITaskService {
 
     /**
      * 更改任务信息
-     * @param taskSetReqDTO 任务设置DTO对象
+     * @param taskSetReq 任务设置DTO对象
      */
-    void setTask(TaskSetReqDTO taskSetReqDTO);
+    void setTask(TaskSetReq taskSetReq);
 
     /**
      * 获取指定用户的任务列表

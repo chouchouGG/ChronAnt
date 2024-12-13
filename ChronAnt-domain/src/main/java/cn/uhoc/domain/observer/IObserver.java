@@ -1,6 +1,6 @@
 package cn.uhoc.domain.observer;
 
-import cn.uhoc.domain.executor.model.entity.TaskBaseEntity;
+import cn.uhoc.domain.executor.model.entity.TaskBase;
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 
 import java.util.List;
@@ -11,12 +11,12 @@ public interface IObserver {
 
     void onObtain(List<TaskEntity> taskEntityList);
 
-    void onExecute(TaskBaseEntity taskBaseEntity);
+    void onExecute(TaskBase taskBase);
 
-    void onFinish(TaskBaseEntity taskBaseEntity);
+    void onFinish(TaskBase taskBase);
 
-    void onStop(TaskBaseEntity taskBaseEntity);
+    void onStop(TaskBase taskBase);
 
-    void onError(TaskBaseEntity taskBaseEntity, Exception e);
+    void onError(TaskBase taskBase, Exception e);
 
 }

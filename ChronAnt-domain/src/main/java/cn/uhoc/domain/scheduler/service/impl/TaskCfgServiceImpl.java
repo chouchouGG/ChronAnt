@@ -3,7 +3,7 @@ package cn.uhoc.domain.scheduler.service.impl;
 import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
 import cn.uhoc.domain.scheduler.repository.ITaskRepository;
 import cn.uhoc.domain.scheduler.service.ITaskCfgService;
-import cn.uhoc.trigger.api.dto.TaskCfgDTO;
+import cn.uhoc.trigger.api.dto.TaskCfgReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,8 @@ public class TaskCfgServiceImpl implements ITaskCfgService {
     }
 
     @Override
-    public void save(TaskCfgDTO taskCfgDTO) {
-        TaskCfgEntity taskCfgEntity = TaskCfgEntity.fromDTO(taskCfgDTO);
+    public void save(TaskCfgReq taskCfgReq) {
+        TaskCfgEntity taskCfgEntity = TaskCfgEntity.fromDTO(taskCfgReq);
         taskRepository.save(taskCfgEntity);
     }
 }

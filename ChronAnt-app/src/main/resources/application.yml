@@ -59,3 +59,13 @@ logging:
   level:
     root: info
   config: classpath:logback-spring.xml
+
+chronant:
+  config:
+    cycle-update-schedule-task-type-config-time: 10000
+    init-offset-for-schedule-task: 0
+    keep-alive-time-for-execute-task-thread-pool: 1000
+    core-concurrent-runTimes-for-execute-task-thread-pool: 5
+    max-concurrent-runTimes-for-execute-task-thread-pool: 10
+
+

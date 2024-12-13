@@ -38,60 +38,60 @@ public class TaskController implements ITaskController {
 
     @PostMapping("/create_task")
     @Override
-    public R createTask(@RequestBody TaskCreateReqDTO taskCreateReqDTO) {
-        if (StringUtils.isNotBlank(taskCreateReqDTO.getTaskType())) {
+    public R createTask(@RequestBody TaskCreateReq taskCreateReq) {
+        if (StringUtils.isNotBlank(taskCreateReq.getTaskType())) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
-        String taskId = taskService.createTask(taskCreateReqDTO);
-        return new R(TaskCreateResDTO.builder().taskId(taskId));
+        String taskId = taskService.createTask(taskCreateReq);
+        return new R(TaskCreateRes.builder().taskId(taskId));
     }
 
     @GetMapping("/get_task")
     @Override
-    public R<TaskResDTO> getTask(@RequestParam("taskId") String taskId) {
+    public R<TaskRes> getTask(@RequestParam("taskId") String taskId) {
         if (StringUtils.isNotBlank(taskId)) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
         TaskEntity task = taskService.getTask(taskId);
-        TaskResDTO taskDTO = TaskConverter.toDTO(task);
+        TaskRes taskDTO = TaskConverter.toDTO(task);
         return new R(taskDTO);
     }
 
     @GetMapping("/get_task_list")
     @Override
-    public R<List<TaskResDTO>> getTaskList(@RequestParam("taskType") String taskType, @RequestParam("status") int status, @RequestParam("limit") int limit) {
+    public R<List<TaskRes>> getTaskList(@RequestParam("taskType") String taskType, @RequestParam("status") int status, @RequestParam("limit") int limit) {
         // fixme 从这里开始进行理解status的逻辑
-        if (StringUtils.isNotBlank(taskType) || !TaskStatus.IsValidStatus(status)) {
+        if (StringUtils.isNotBlank(taskType)) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
         List<TaskEntity> taskEntityList = taskService.getTaskList(taskType, status, limit);
-        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
-        return new R(taskResDTOs);
+        List<TaskRes> taskRes = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
+        return new R(taskRes);
     }
 
     @GetMapping("/hold_task")
     @Override
     public R holdTask(@RequestParam("taskType") String taskType, @RequestParam("status") int status, @RequestParam("limit") int limit) {
-        if (StringUtils.isNotBlank(taskType) || !TaskStatus.IsValidStatus(status)) {
+        if (StringUtils.isNotBlank(taskType)) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
         List<TaskEntity> taskEntityList = taskService.holdTask(taskType, status, limit);
-        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
-        return new R(taskResDTOs);
+        List<TaskRes> taskRes = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
+        return new R(taskRes);
     }
 
     @PostMapping("/set_task")
     @Override
-    public R setTask(@RequestBody TaskSetReqDTO taskSetReqDTO) {
-        if (StringUtils.isNotBlank(taskSetReqDTO.getTaskId())) {
+    public R setTask(@RequestBody TaskSetReq taskSetReq) {
+        if (StringUtils.isNotBlank(taskSetReq.getTaskId())) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
-        taskService.setTask(taskSetReqDTO);
+        taskService.setTask(taskSetReq);
         return new R(ExceptionStatus.SUCCESS);
     }
 
@@ -103,8 +103,8 @@ public class TaskController implements ITaskController {
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
         List<TaskEntity> taskEntityList = taskService.getTaskByUserIdAndStatus(userId, statusList);
-        List<TaskResDTO> taskResDTOs = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
-        return new R(taskResDTOs);
+        List<TaskRes> taskRes = taskEntityList.stream().map(TaskConverter::toDTO).collect(Collectors.toList());
+        return new R(taskRes);
     }
 
     @GetMapping("/cfg/list")
@@ -113,12 +113,12 @@ public class TaskController implements ITaskController {
     }
 
     @GetMapping("/cfg/configuration")
-    public R SetTaskCFG(@RequestBody TaskCfgDTO taskCfgDTO) {
-        if (StringUtils.isNotBlank(taskCfgDTO.getTaskType())) {
+    public R SetTaskCFG(@RequestBody TaskCfgReq taskCfgReq) {
+        if (StringUtils.isNotBlank(taskCfgReq.getTaskType())) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
-        taskCfgService.save(taskCfgDTO);
+        taskCfgService.save(taskCfgReq);
         return new R(ExceptionStatus.SUCCESS);
     }
 

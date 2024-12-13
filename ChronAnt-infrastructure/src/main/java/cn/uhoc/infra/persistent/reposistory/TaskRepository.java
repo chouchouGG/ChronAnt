@@ -9,7 +9,6 @@ import cn.uhoc.infra.persistent.dao.ITaskDao;
 import cn.uhoc.infra.persistent.dao.ITaskPosDao;
 import cn.uhoc.infra.persistent.po.Task;
 import cn.uhoc.infra.persistent.po.TaskCfg;
-import cn.uhoc.trigger.api.dto.TaskCfgDTO;
 import cn.uhoc.type.enums.ExceptionStatus;
 import cn.uhoc.type.exception.E;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +82,7 @@ public class TaskRepository implements ITaskRepository {
             log.warn("未从表中获取到对应的任务, 表名: {}, 任务id: {}", tableName, taskId);
             throw new E(ExceptionStatus.ERR_GET_TASK_INFO);
         }
-        return Task.toEntity(task);
+        return task.toEntity();
     }
 
     @Override

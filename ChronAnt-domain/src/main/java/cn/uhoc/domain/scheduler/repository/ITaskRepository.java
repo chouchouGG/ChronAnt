@@ -3,7 +3,6 @@ package cn.uhoc.domain.scheduler.repository;
 import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 import cn.uhoc.domain.scheduler.model.entity.TaskPosEntity;
-import cn.uhoc.trigger.api.dto.TaskCfgDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

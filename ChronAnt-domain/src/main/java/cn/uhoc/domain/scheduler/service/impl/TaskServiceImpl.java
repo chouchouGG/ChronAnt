@@ -7,17 +7,16 @@ import cn.uhoc.domain.scheduler.model.vo.TaskConstants;
 import cn.uhoc.domain.scheduler.model.vo.TaskStatus;
 import cn.uhoc.domain.scheduler.repository.ITaskRepository;
 import cn.uhoc.domain.scheduler.service.ITaskService;
-import cn.uhoc.trigger.api.dto.TaskCreateReqDTO;
-import cn.uhoc.trigger.api.dto.TaskSetReqDTO;
+import cn.uhoc.trigger.api.dto.TaskCreateReq;
+import cn.uhoc.trigger.api.dto.TaskSetReq;
 import cn.uhoc.type.common.SnowFlake;
 import cn.uhoc.type.enums.ExceptionStatus;
 import cn.uhoc.type.exception.E;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,8 +34,8 @@ public class TaskServiceImpl implements ITaskService {
     private ITaskRepository taskRepository;
 
     @Override
-    public String createTask(TaskCreateReqDTO taskCreateReqDTO) {
-        String taskType = taskCreateReqDTO.getTaskType();
+    public String createTask(TaskCreateReq taskCreateReq) {
+        String taskType = taskCreateReq.getTaskType();
 
         // 获取任务在数据库表中的位置偏移
         TaskPosEntity taskPos = taskRepository.getTaskPositionByType(taskType);
@@ -46,8 +45,9 @@ public class TaskServiceImpl implements ITaskService {
         // 构建任务对象并写入数据库
         String taskId = null;
         try {
-            TaskEntity taskEntity = buildTaskModel(taskCreateReqDTO, taskPos, taskTypeCfg);
+            TaskEntity taskEntity = buildTaskModel(taskCreateReq, taskPos, taskTypeCfg);
             taskId = taskEntity.getTaskId();
+            // todo 后期去掉任务表按类型分表
             String tableName = getTableName(taskType, taskPos.getScheduleEndPos());
             taskRepository.insertTask(tableName, taskEntity);
         } catch (Exception e) {
@@ -92,48 +92,31 @@ public class TaskServiceImpl implements ITaskService {
                 .collect(Collectors.toList());
         List<String> taskIds = filterList.stream().map(TaskEntity::getTaskId).collect(Collectors.toList());
         if (!taskIds.isEmpty()) {
-            taskRepository.updateStatusBatch(tableName, taskIds, TaskStatus.EXECUTING.getStatus());
+            taskRepository.updateStatusBatch(tableName, taskIds, TaskStatus.EXECUTING.getCode());
         }
         return filterList;
     }
 
     @Override
-    public void setTask(TaskSetReqDTO taskSetReqDTO) {
-        TaskEntity taskEntity;
-        String tableName = getTableNameById(taskSetReqDTO.getTaskId());
+    public void setTask(TaskSetReq taskSetReq) {
+        String tableName = getTableNameById(taskSetReq.getTaskId());
+        TaskEntity taskEntity = TaskEntity.builder()
+                .taskStage(taskSetReq.getTaskStage())
+                .status(taskSetReq.getStatus())
+                .crtRetryNum(taskSetReq.getCrtRetryNum())
+                .maxRetryNum(taskSetReq.getMaxRetryNum())
+                .orderTime(taskSetReq.getOrderTime())
+                .priority(taskSetReq.getPriority())
+                .maxRetryInterval(taskSetReq.getMaxRetryInterval())
+                .scheduleLog(taskSetReq.getScheduleLog())
+                .taskContext(taskSetReq.getTaskContext())
+                .build();
+        List<Integer> excludeStatusList = Arrays.asList(
+                TaskStatus.SUCCESS.getCode(),
+                TaskStatus.FAIL.getCode()
+        );
         try {
-            taskEntity = taskRepository.getTaskById(taskSetReqDTO.getTaskId(), tableName);
-        } catch (Exception e) {
-            throw new E(ExceptionStatus.ERR_GET_TASK_INFO);
-        }
-
-        if (taskEntity == null) {
-            throw new E(ExceptionStatus.ERR_GET_TASK_INFO);
-        }
-        // fixme 思考这里有没有更好的方式
-        taskEntity.setStatus(taskSetReqDTO.getStatus());
-        if (StringUtils.isNotBlank(taskSetReqDTO.getTaskStage())) {
-            taskEntity.setTaskStage(taskSetReqDTO.getTaskStage());
-        }
-        if (StringUtils.isNotBlank((taskSetReqDTO.getTaskContext()))) {
-            taskEntity.setTaskContext(taskSetReqDTO.getTaskContext());
-        }
-        if (StringUtils.isNotBlank((taskSetReqDTO.getScheduleLog()))) {
-            taskEntity.setScheduleLog(taskSetReqDTO.getScheduleLog());
-        }
-        taskEntity.setCrtRetryNum(taskSetReqDTO.getCrtRetryNum());
-        taskEntity.setMaxRetryInterval(taskSetReqDTO.getMaxRetryInterval());
-        taskEntity.setMaxRetryNum(taskSetReqDTO.getMaxRetryNum());
-        taskEntity.setOrderTime(taskSetReqDTO.getOrderTime());
-        taskEntity.setPriority(taskSetReqDTO.getPriority());
-
-        // fixme 设置修改时间
-//        taskEntity.setModifyTime(System.currentTimeMillis());
-        List<Integer> statusList = new ArrayList<>();
-        statusList.add(TaskStatus.SUCCESS.getStatus());
-        statusList.add(TaskStatus.FAIL.getStatus());
-        try {
-            taskRepository.updateTask(taskEntity, statusList, tableName);
+            taskRepository.updateTask(taskEntity, excludeStatusList, tableName);
         } catch (Exception e) {
             throw new E(ExceptionStatus.ERR_SET_TASK);
         }
@@ -142,24 +125,15 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public List<TaskEntity> getTaskByUserIdAndStatus(String userId, int status) {
         List<TaskEntity> taskEntityList;
-        String tableName = getTableName("LarkTask",1);
-        List<Integer> statusList = getStatusList(status);
+        // TODO 表明tableName临时使用，后续完善为一个任务表，而不是一个类型的任务一个表
+        String tableName = getTableName("LarkTask", 1);
+        List<Integer> statusList = TaskStatus.getStatusList(status);
         try {
-            taskEntityList = taskRepository.getTaskByUseridAndStatus(userId, statusList, tableName);
+            taskEntityList = taskRepository.getTaskByUseridAndStatus(userId, statusList, tableName); // TODO 去掉tableName参数
         } catch (Exception e) {
-            throw new  E(ExceptionStatus.ERR_GET_TASK_LIST);
+            throw new E(ExceptionStatus.ERR_GET_TASK_LIST);
         }
         return taskEntityList;
-    }
-
-    private List<Integer> getStatusList(int status) {
-        List<Integer> statusList = new ArrayList<>();
-        while (status != 0) {
-            int cur = status & -status;
-            statusList.add(cur);
-            status ^= cur;
-        }
-        return statusList;
     }
 
     // 这个方法暂时没用到
@@ -175,19 +149,19 @@ public class TaskServiceImpl implements ITaskService {
     /**
      * 构建任务实体对象
      */
-    private TaskEntity buildTaskModel(TaskCreateReqDTO taskCreateReqDTO, TaskPosEntity taskPos, TaskCfgEntity taskTypeCfg) {
-        String taskId = getTaskId(taskCreateReqDTO.getTaskType(), taskPos);
+    private TaskEntity buildTaskModel(TaskCreateReq taskCreateReq, TaskPosEntity taskPos, TaskCfgEntity taskTypeCfg) {
+        String taskId = getTaskId(taskCreateReq.getTaskType(), taskPos);
         return TaskEntity.builder()
-                .userId(taskCreateReqDTO.getUserId())
+                .userId(taskCreateReq.getUserId())
                 .taskId(taskId)
-                .taskType(taskCreateReqDTO.getTaskType())
-                .status(TaskStatus.PENDING.getStatus())
+                .taskType(taskCreateReq.getTaskType())
+                .status(TaskStatus.PENDING.getCode())
                 .crtRetryNum(0)
                 .maxRetryNum(taskTypeCfg.getMaxRetryNum())
                 .maxRetryInterval(taskTypeCfg.getRetryInterval())
-                .taskStage(taskCreateReqDTO.getTaskStage())
-                .scheduleLog(taskCreateReqDTO.getScheduleLog())
-                .taskContext(taskCreateReqDTO.getTaskContext())
+                .taskStage(taskCreateReq.getTaskStage())
+                .scheduleLog(taskCreateReq.getScheduleLog())
+                .taskContext(taskCreateReq.getTaskContext())
                 .build();
     }
 

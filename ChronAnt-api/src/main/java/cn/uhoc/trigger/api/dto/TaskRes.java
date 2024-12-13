@@ -11,7 +11,7 @@ import lombok.Data;
  **/
 @Builder
 @Data
-public class TaskResDTO {
+public class TaskRes {
 
     private String userId;
     private String taskId;

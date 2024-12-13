@@ -1,13 +1,11 @@
 package cn.uhoc.domain.convertor;
 
-import cn.uhoc.domain.executor.model.entity.ScheduleLogEntity;
-import cn.uhoc.domain.executor.model.entity.TaskBaseEntity;
-import cn.uhoc.domain.executor.model.entity.TaskContextEntity;
+import cn.uhoc.domain.executor.model.entity.ScheduleLog;
+import cn.uhoc.domain.executor.model.entity.TaskBase;
+import cn.uhoc.domain.executor.model.entity.TaskContext;
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
-import cn.uhoc.domain.task.TaskRet;
-import cn.uhoc.trigger.api.dto.TaskResDTO;
+import cn.uhoc.trigger.api.dto.TaskRes;
 import cn.uhoc.type.common.ReflectionUtils;
-import cn.uhoc.type.exception.ReflectionException;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,11 +17,11 @@ import java.util.Objects;
 @Slf4j
 public class TaskConverter {
 
-    public static TaskBaseEntity toTaskBaseEntity(TaskEntity taskEntity, Class<?> taskClazz) {
+    public static TaskBase toTaskBaseEntity(TaskEntity taskEntity, Class<?> taskClazz) {
         if (taskEntity == null) {
             return null;
         }
-        TaskBaseEntity taskBaseEntity = TaskBaseEntity.builder()
+        TaskBase taskBase = TaskBase.builder()
                 .userId(taskEntity.getUserId())
                 .taskId(taskEntity.getTaskId())
                 .taskType(taskEntity.getTaskType())
@@ -32,52 +30,46 @@ public class TaskConverter {
                 .crtRetryNum(taskEntity.getCrtRetryNum())
                 .maxRetryNum(taskEntity.getMaxRetryNum())
                 .maxRetryInterval(taskEntity.getMaxRetryInterval())
-                .scheduleLog(JSON.parseObject(taskEntity.getScheduleLog(), ScheduleLogEntity.class))
+                .scheduleLog(JSON.parseObject(taskEntity.getScheduleLog(), ScheduleLog.class))
                 .build();
-        TaskRet<TaskContextEntity> contextLoad = null;
-        try {
-            contextLoad = ReflectionUtils.reflectMethod(taskClazz, "contextLoad", new Object[]{taskEntity.getTaskContext()}, new Class[]{String.class});
-        } catch (ReflectionException e) {
-            log.error("Error occurred while invoking 'contextLoad' in class {}: {}", taskClazz.getName(), e.getMessage(), e);
-            throw new RuntimeException("Failed to load context via reflection: " + e.getMessage(), e);
-        }
+        // 默认使用JSON解析上下文
+        taskBase.setTaskContext(JSON.parseObject(taskEntity.getTaskContext(), TaskContext.class));
+        // 尝试获取自定义的上下文解析结果（contextLoad方法交由用户实现）
+        TaskContext contextLoad = ReflectionUtils.reflectMethod(taskClazz, "contextLoad", new Object[]{taskEntity.getTaskContext()}, new Class[]{String.class});
         if (Objects.nonNull(contextLoad)) {
-            taskBaseEntity.setTaskContext(contextLoad.getResult());
-        } else {
-            // 设置为上次的context
-            taskBaseEntity.setTaskContext(JSON.parseObject(taskEntity.getTaskContext(), TaskContextEntity.class));
+            taskBase.setTaskContext(contextLoad);
         }
-        return taskBaseEntity;
+        return taskBase;
     }
 
-    public static TaskEntity toTaskEntity(TaskBaseEntity taskBaseEntity) {
-        if (taskBaseEntity == null) {
+    public static TaskEntity toTaskEntity(TaskBase taskBase) {
+        if (taskBase == null) {
             return null;
         }
         return TaskEntity.builder()
-                .userId(taskBaseEntity.getUserId())
-                .taskId(taskBaseEntity.getTaskId())
-                .taskType(taskBaseEntity.getTaskType())
-                .taskStage(taskBaseEntity.getTaskStage())
-                .status(taskBaseEntity.getStatus())
-                .crtRetryNum(taskBaseEntity.getCrtRetryNum())
-                .maxRetryNum(taskBaseEntity.getMaxRetryNum())
-                .orderTime(taskBaseEntity.getOrderTime())
-                .priority(taskBaseEntity.getPriority())
-                .maxRetryInterval(taskBaseEntity.getMaxRetryInterval())
-                .scheduleLog(taskBaseEntity.getScheduleLog().toString())
-                .taskContext(taskBaseEntity.getTaskContext().toString())
+                .userId(taskBase.getUserId())
+                .taskId(taskBase.getTaskId())
+                .taskType(taskBase.getTaskType())
+                .taskStage(taskBase.getTaskStage())
+                .status(taskBase.getStatus())
+                .crtRetryNum(taskBase.getCrtRetryNum())
+                .maxRetryNum(taskBase.getMaxRetryNum())
+                .orderTime(taskBase.getOrderTime())
+                .priority(taskBase.getPriority())
+                .maxRetryInterval(taskBase.getMaxRetryInterval())
+                .scheduleLog(taskBase.getScheduleLog().toString())
+                .taskContext(taskBase.getTaskContext().toString())
                 .build();
     }
 
     /**
      * Entity转为DTO
      */
-    public static TaskResDTO toDTO(TaskEntity task) {
+    public static TaskRes toDTO(TaskEntity task) {
         if (task == null) {
             return null;
         }
-        return TaskResDTO.builder()
+        return TaskRes.builder()
                 .userId(task.getUserId())
                 .taskId(task.getTaskId())
                 .taskType(task.getTaskType())

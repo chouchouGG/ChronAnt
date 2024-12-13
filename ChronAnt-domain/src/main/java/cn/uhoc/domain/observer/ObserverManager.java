@@ -35,11 +35,7 @@ public class ObserverManager {
         // 查找并调用对应的观察者方法
         for (IObserver observer : observers) {
             Method method = observerMethods.get(observerTypeEnum);
-            try {
-                ReflectionUtils.doInvokeMethod(observer, method, params);
-            } catch (ReflectionException e) {
-                throw new RuntimeException(e);
-            }
+            ReflectionUtils.doInvokeMethod(observer, method, params);
         }
     }
 

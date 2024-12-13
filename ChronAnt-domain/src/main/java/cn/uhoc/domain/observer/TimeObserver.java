@@ -1,6 +1,6 @@
 package cn.uhoc.domain.observer;
 
-import cn.uhoc.domain.executor.model.entity.TaskBaseEntity;
+import cn.uhoc.domain.executor.model.entity.TaskBase;
 import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
 import cn.uhoc.domain.scheduler.service.ITaskService;
 import cn.uhoc.type.common.UserConfig;
@@ -32,9 +32,9 @@ public class TimeObserver implements IObserver { // TODO 将控制台打印(Syst
     // 执行任务前做的动作，目前是简单打印
     @Override
     @ObserverStage(observerType = ObserverTypeEnum.onExecute)
-    public void onExecute(TaskBaseEntity taskBaseEntity) {
+    public void onExecute(TaskBase taskBase) {
         beginTime = System.currentTimeMillis();
-        log.info("Task '{}' execution started, Task ID: '{}'", taskBaseEntity.getTaskType(), taskBaseEntity.getTaskId());
+        log.info("Task '{}' execution started, Task ID: '{}'", taskBase.getTaskType(), taskBase.getTaskId());
     }
 
     // 启动动作
@@ -47,22 +47,22 @@ public class TimeObserver implements IObserver { // TODO 将控制台打印(Syst
     // 任务执行完成做的动作
     @Override
     @ObserverStage(observerType = ObserverTypeEnum.onFinish)
-    public void onFinish(TaskBaseEntity taskBaseEntity) {
+    public void onFinish(TaskBase taskBase) {
         long costTime = System.currentTimeMillis() - beginTime;
-        log.info("Task '{}' finished, time taken: {} ms", taskBaseEntity.getTaskType(), costTime);
+        log.info("Task '{}' finished, time taken: {} ms", taskBase.getTaskType(), costTime);
     }
 
     // 执行任务失败时的动作，目前是本地重试
     @Override
     @ObserverStage(observerType = ObserverTypeEnum.onError)
-    public void onError(TaskBaseEntity taskBaseEntity, Exception e) {
-        log.error("Task '{}' failed, error message: {}", taskBaseEntity.getTaskType(), e.getMessage());
+    public void onError(TaskBase taskBase, Exception e) {
+        log.error("Task '{}' failed, error message: {}", taskBase.getTaskType(), e.getMessage());
     }
 
     // 获取待定使用
     @Override
     @ObserverStage(observerType = ObserverTypeEnum.onStop)
-    public void onStop(TaskBaseEntity taskBaseEntity) {
-        log.info("Task '{}' stopped", taskBaseEntity.getTaskType());
+    public void onStop(TaskBase taskBase) {
+        log.info("Task '{}' stopped", taskBase.getTaskType());
     }
 }

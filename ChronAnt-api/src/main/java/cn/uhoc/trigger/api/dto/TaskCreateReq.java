@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TaskCreateReqDTO {
+public class TaskCreateReq {
 
     private String userId;
 
