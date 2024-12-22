@@ -1,7 +1,7 @@
 package test;
 
-import cn.uhoc.domain.executor.model.entity.ScheduleLog;
-import cn.uhoc.domain.executor.model.entity.TaskContext;
+import cn.uhoc.domain.executor.entity.ScheduleLog;
+import cn.uhoc.domain.executor.entity.TaskContext;
 import cn.uhoc.domain.task.Executable;
 import cn.uhoc.trigger.api.dto.TaskCreateReq;
 import cn.uhoc.type.common.ReflectionUtils;

@@ -1,14 +1,14 @@
 package cn.uhoc;
 
-import cn.uhoc.launcher.Launcher;
-import cn.uhoc.launcher.Launch;
+import cn.uhoc.config.ThreadPoolConfigProp;
+import cn.uhoc.domain.executor.service.ExecutorService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties
+@EnableConfigurationProperties({ThreadPoolConfigProp.class})  // 显式注册配置类
 public class Application implements CommandLineRunner {
 
     public static void main(String[] args){
@@ -16,10 +16,7 @@ public class Application implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        // 启动 launcher
-        Launch launcher = Launcher.getInstance();
-        // 运行 launcher
-        launcher.start();
+    public void run(String... args) {
+        ExecutorService.getInstance().start();
     }
 }

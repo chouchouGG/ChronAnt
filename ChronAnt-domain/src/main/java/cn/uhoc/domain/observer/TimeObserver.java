@@ -1,8 +1,8 @@
 package cn.uhoc.domain.observer;
 
-import cn.uhoc.domain.executor.model.entity.TaskBase;
-import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
-import cn.uhoc.domain.scheduler.service.ITaskService;
+import cn.uhoc.domain.executor.entity.TaskBase;
+import cn.uhoc.domain.manager.model.entity.TaskEntity;
+import cn.uhoc.domain.manager.service.ITaskService;
 import cn.uhoc.type.common.UserConfig;
 import lombok.extern.slf4j.Slf4j;
 

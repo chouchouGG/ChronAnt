@@ -7,18 +7,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.util.NavigableMap;
 import java.util.concurrent.*;
 
 @Slf4j
 @EnableAsync
 @Configuration // 标记一个类作为 Java 配置类
-@EnableConfigurationProperties({ThreadPoolConfigProperties.class, AsyncTaskWithMultiStageConfig.class})
+@EnableConfigurationProperties({ThreadPoolConfigProp.class, AsyncTaskWithMultiStageConfig.class})
+@Deprecated
 public class ThreadPoolConfig {
 
     @Bean
     @ConditionalOnMissingBean(ThreadPoolExecutor.class)
-    public ThreadPoolExecutor threadPoolExecutor(ThreadPoolConfigProperties baseThreadPoolProperties, AsyncTaskWithMultiStageConfig taskWithMultiStageConfig) {
+    public ThreadPoolExecutor threadPoolExecutor(ThreadPoolConfigProp baseThreadPoolProperties, AsyncTaskWithMultiStageConfig taskWithMultiStageConfig) {
         // TODO 学习线程池的常见拒绝策略
         // 实例化拒绝策略
         RejectedExecutionHandler handler;

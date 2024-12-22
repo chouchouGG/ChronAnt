@@ -1,6 +1,6 @@
 package cn.uhoc.infra.persistent.dao;
 
-import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
+import cn.uhoc.domain.manager.model.entity.TaskCfgEntity;
 import cn.uhoc.infra.persistent.po.TaskCfg;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -1,7 +1,7 @@
 package cn.uhoc.infra.persistent.po;
 
 
-import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
+import cn.uhoc.domain.manager.model.entity.TaskEntity;
 import lombok.Data;
 
 @Data

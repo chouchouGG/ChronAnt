@@ -1,9 +1,9 @@
 package test;
 
-import cn.uhoc.domain.executor.model.entity.TaskContext;
-import cn.uhoc.domain.executor.model.entity.TaskStageMeta;
-import cn.uhoc.domain.executor.model.entity.TaskStageResult;
-import cn.uhoc.domain.register.MultiStageAsyncTask;
+import cn.uhoc.domain.executor.entity.TaskContext;
+import cn.uhoc.domain.executor.entity.TaskStageMeta;
+import cn.uhoc.domain.executor.entity.TaskStageResult;
+import cn.uhoc.domain.register.anno.MultiStageAsyncTask;
 import cn.uhoc.domain.task.Executable;
 import cn.uhoc.type.common.ReflectionUtils;
 import com.alibaba.fastjson.JSON;
@@ -12,14 +12,14 @@ import java.lang.reflect.Method;
 
 // 测试任务
 // 此处可以定义自己的任务
-@MultiStageAsyncTask(value = "test.Lark")
+@MultiStageAsyncTask(value = "Lark")
 public class Lark implements Executable {
 
     public TaskStageResult printMsg(String msg) {
         System.out.println("The printed msg is: " + msg);
         TaskStageMeta taskSetStageEntity;
         Method method = ReflectionUtils.getMethod(this.getClass(), "printMsg2", new Class[]{String.class});
-        taskSetStageEntity = buildTaskStageMeta(this.getClass(), method.getName(), new Object[]{"我要开花！"}, method.getParameterTypes());
+        taskSetStageEntity = buildTaskStageMeta(this.getClass(), method.getName(), new Object[]{"I'm hero！"}, method.getParameterTypes());
         return new TaskStageResult(taskSetStageEntity, "SUCCESS");
     }
 

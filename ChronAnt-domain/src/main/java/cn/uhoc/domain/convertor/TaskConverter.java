@@ -1,9 +1,9 @@
 package cn.uhoc.domain.convertor;
 
-import cn.uhoc.domain.executor.model.entity.ScheduleLog;
-import cn.uhoc.domain.executor.model.entity.TaskBase;
-import cn.uhoc.domain.executor.model.entity.TaskContext;
-import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
+import cn.uhoc.domain.executor.entity.ScheduleLog;
+import cn.uhoc.domain.executor.entity.TaskBase;
+import cn.uhoc.domain.executor.entity.TaskContext;
+import cn.uhoc.domain.manager.model.entity.TaskEntity;
 import cn.uhoc.trigger.api.dto.TaskRes;
 import cn.uhoc.type.common.ReflectionUtils;
 import com.alibaba.fastjson.JSON;

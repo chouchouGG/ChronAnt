@@ -1,10 +1,9 @@
 package cn.uhoc.trigger.http;
 
 import cn.uhoc.domain.convertor.TaskConverter;
-import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
-import cn.uhoc.domain.scheduler.model.vo.TaskStatus;
-import cn.uhoc.domain.scheduler.service.ITaskCfgService;
-import cn.uhoc.domain.scheduler.service.ITaskService;
+import cn.uhoc.domain.manager.model.entity.TaskEntity;
+import cn.uhoc.domain.manager.service.ITaskCfgService;
+import cn.uhoc.domain.manager.service.ITaskService;
 import cn.uhoc.trigger.api.ITaskController;
 import cn.uhoc.trigger.api.dto.*;
 import cn.uhoc.type.enums.ExceptionStatus;

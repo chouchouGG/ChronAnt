@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  **/
 @Data
 @ConfigurationProperties(prefix = "chronant.config", ignoreInvalidFields = true)
+@Deprecated
 public class AsyncTaskWithMultiStageConfig {
 
     // TODO 数据库进行更新任务类型配置后，隔一段间隔才会生效。

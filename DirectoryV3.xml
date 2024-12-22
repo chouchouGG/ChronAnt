@@ -9,5 +9,9 @@
            presentableText="" tooltipTitle="" icon="" textColor="" backgroundColor=""/>
      <tree path="/ChronAnt-app/src/main/java/cn/uhoc/launcher" title="启动器"/>
      <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/executor" title="执行器"/>
-     <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/observer" title="观察器"/>
- </trees>
+     <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/observer" title="在任务执行流程中特定节点增加观察逻辑"
+           extension="" presentableText="" tooltipTitle="" icon="" textColor="" backgroundColor=""/>
+     <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/manager" title="负责数据库任务记录的增删改查"/>
+    <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/register" title="注册用户自定义的多阶段异步任务类"/>
+    <tree path="/ChronAnt-domain/src/main/java/cn/uhoc/domain/task" title="多阶段异步任务需要实现的接口"/>
+</trees>

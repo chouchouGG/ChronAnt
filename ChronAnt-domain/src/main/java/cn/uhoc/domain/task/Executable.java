@@ -1,8 +1,8 @@
 package cn.uhoc.domain.task;
 
-import cn.uhoc.domain.executor.model.entity.TaskContext;
-import cn.uhoc.domain.executor.model.entity.TaskStageMeta;
-import cn.uhoc.domain.executor.model.entity.TaskStageResult;
+import cn.uhoc.domain.executor.entity.TaskContext;
+import cn.uhoc.domain.executor.entity.TaskStageMeta;
+import cn.uhoc.domain.executor.entity.TaskStageResult;
 import cn.uhoc.type.common.ReflectionUtils;
 import cn.uhoc.type.exception.ReflectionException;
 

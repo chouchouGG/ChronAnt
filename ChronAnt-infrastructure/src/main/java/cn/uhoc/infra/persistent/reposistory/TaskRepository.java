@@ -1,9 +1,9 @@
 package cn.uhoc.infra.persistent.reposistory;
 
-import cn.uhoc.domain.scheduler.model.entity.TaskCfgEntity;
-import cn.uhoc.domain.scheduler.model.entity.TaskEntity;
-import cn.uhoc.domain.scheduler.model.entity.TaskPosEntity;
-import cn.uhoc.domain.scheduler.repository.ITaskRepository;
+import cn.uhoc.domain.manager.model.entity.TaskCfgEntity;
+import cn.uhoc.domain.manager.model.entity.TaskEntity;
+import cn.uhoc.domain.manager.model.entity.TaskPosEntity;
+import cn.uhoc.domain.manager.repository.ITaskRepository;
 import cn.uhoc.infra.persistent.dao.ITaskCfgDao;
 import cn.uhoc.infra.persistent.dao.ITaskDao;
 import cn.uhoc.infra.persistent.dao.ITaskPosDao;
