@@ -12,7 +12,11 @@
     </resultMap>
     <select id="getTaskPositionByType" resultMap="resultMap">
         select *
-        from t_schedule_pos
+        from task_offset_position
         where task_type = #{taskType}
+    </select>
+    <select id="getTaskPosList" resultMap="resultMap">
+        select *
+        from task_offset_position;
     </select>
 </mapper>

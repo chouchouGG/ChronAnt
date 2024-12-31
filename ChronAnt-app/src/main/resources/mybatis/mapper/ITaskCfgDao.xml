@@ -14,7 +14,7 @@
         <result column="modify_time" property="modifyTime"/>
     </resultMap>
     <update id="save" parameterType="cn.uhoc.infra.persistent.po.TaskCfg">
-        insert into `t_schedule_cfg`(`task_type`,
+        insert into `task_config`(`task_type`,
                                      `schedule_limit`,
                                      `schedule_interval`,
                                      `max_processing_time`,
@@ -27,12 +27,12 @@
     </update>
     <select id="getTaskConfigByType" resultMap="resultMap">
         SELECT *
-        FROM `t_schedule_cfg`
+        FROM `task_config`
         where task_type = #{taskType}
     </select>
     <select id="getTaskTypeCfgList" resultMap="resultMap">
         select *
-        from `t_schedule_cfg`
+        from `task_config`
     </select>
 
 </mapper>

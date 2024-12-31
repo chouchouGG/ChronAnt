@@ -1,6 +1,5 @@
 package cn.uhoc.type.common;
 
-import cn.uhoc.type.exception.ReflectionException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,16 +15,16 @@ public class ReflectionUtils {
         try {
             method = clazz.getMethod(methodName, paramTypes);
         } catch (NoSuchMethodException e) {
-            log.error("Method not found in class, className: {}, methodName: {}", clazz.getName(), methodName);
+            log.error("方法找不到, className: {}, methodName: {}", clazz.getName(), methodName);
             throw new RuntimeException("Method '" + methodName + "' not found in class " + clazz.getName());
         }
         return method;
     }
 
-    public static void checkParamsNum(Object[] params, Class<?>[] paramTypes) throws ReflectionException {
+    public static void checkParamsNum(Object[] params, Class<?>[] paramTypes) {
         // 参数个数检验
         if (params.length != paramTypes.length) {
-            log.error("Parameters don't match paramTypes, params: {}, paramTypes: {}", params, paramTypes);
+            log.error("参数与参数类型不匹配, params: {}, paramTypes: {}", params, paramTypes);
             throw new RuntimeException("Parameters count mismatch: expected " + paramTypes.length + ", got " + params.length);
         }
     }
@@ -42,7 +41,7 @@ public class ReflectionUtils {
             return result;
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException |
                  NoSuchMethodException e) {
-            log.error("Error occurred while invoking method '{}' via reflection: ", methodName, e);
+            log.error("反射调用方法异常，方法名称: '{}'", methodName, e);
             throw new RuntimeException("Error invoking method '" + methodName + "' in class " + clazz.getName(), e);
         }
     }
@@ -66,8 +65,7 @@ public class ReflectionUtils {
         try {
             return (T) method.invoke(obj, params);
         } catch (Exception e) {
-            log.error("Error invoking method '{}' of class '{}'. params: '{}'. Exception: '{}'",
-                    method.getName(), obj.getClass().getName(), params, e.getMessage());
+            log.error("Error invoking method '{}' of class '{}'. params: '{}'. Exception: '{}'", method.getName(), obj.getClass().getName(), params, e.getMessage());
             throw new RuntimeException("Error invoking method '" + method.getName() + "' in class " + obj.getClass().getName(), e);
         }
     }

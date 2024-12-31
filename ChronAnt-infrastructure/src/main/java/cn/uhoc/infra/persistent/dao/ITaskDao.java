@@ -11,13 +11,13 @@ public interface ITaskDao {
 
     void insertTask(String tableName, TaskEntity taskEntity);
 
-    List<Task> getTaskList(String tableName, String taskType, int status, int limit);
+    List<Task> getTaskList(String tableName, String taskType, List<Integer> statusList, int limit);
 
     Task getTaskById(String taskId, String tableName);
 
     void updateStatusBatch(String tableName, List<String> taskIds, int status);
 
-    void updateTask(TaskEntity task, List<Integer> statusList, String tableName);
+    void updateTask(TaskEntity taskEntity, List<Integer> statusList, String tableName);
 
     List<Task> getTaskByUseridAndStatus(String userId, List<Integer> statusList, String tableName);
 }

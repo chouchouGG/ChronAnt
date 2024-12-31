@@ -17,9 +17,5 @@ public class TaskCfgReq {
 
     private Integer retryInterval;
 
-//    private Long createTime;
-//
-//    private Long modifyTime;
-
 
 }

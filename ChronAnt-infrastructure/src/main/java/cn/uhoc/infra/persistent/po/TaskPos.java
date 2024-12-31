@@ -1,6 +1,9 @@
 package cn.uhoc.infra.persistent.po;
 
+import cn.uhoc.domain.manager.model.entity.TaskPosEntity;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 /**
  * 
@@ -28,10 +31,18 @@ public class TaskPos {
     /**
      * 创建时间
      */
-    private Long createTime;
+    private LocalDateTime createTime;
     /**
      * 修改时间
      */
-    private Long modifyTime;
+    private LocalDateTime modifyTime;
+
+    public TaskPosEntity toEntity() {
+        return TaskPosEntity.builder()
+                .taskType(this.getTaskType())
+                .scheduleBeginPos(this.getScheduleBeginPos())
+                .scheduleEndPos(this.getScheduleEndPos())
+                .build();
+    }
 
 }

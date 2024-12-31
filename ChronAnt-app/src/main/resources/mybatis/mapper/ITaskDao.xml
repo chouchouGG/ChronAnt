@@ -12,8 +12,8 @@
         <result column="status" property="status"/>
         <result column="crt_retry_num" property="crtRetryNum"/>
         <result column="max_retry_num" property="maxRetryNum"/>
-        <result column="priority" property="orderTime"/>
-        <result column="order_time" property="priority"/>
+        <result column="priority" property="priority"/>
+        <result column="order_time" property="orderTime"/>
         <result column="max_retry_interval" property="maxRetryInterval"/>
         <result column="schedule_log" property="scheduleLog"/>
         <result column="task_context" property="taskContext"/>
@@ -42,7 +42,7 @@
                 #{taskEntity.status},
                 #{taskEntity.crtRetryNum},
                 #{taskEntity.maxRetryNum},
-                now(),
+                #{taskEntity.orderTime},
                 #{taskEntity.priority},
                 #{taskEntity.maxRetryInterval},
                 #{taskEntity.scheduleLog},
@@ -63,31 +63,31 @@
         update ${tableName}
         <set>
             <if test="taskEntity.taskStage != null and taskEntity.taskStage != ''">
-                task_stage = #{taskEntity.taskStage}
+                task_stage = #{taskEntity.taskStage},
             </if>
             <if test="taskEntity.status != null">
-                status = #{taskEntity.status}
+                status = #{taskEntity.status},
             </if>
             <if test="taskEntity.crtRetryNum != null">
-                crt_retry_num = #{taskEntity.crtRetryNum}
+                crt_retry_num = #{taskEntity.crtRetryNum},
             </if>
             <if test="taskEntity.maxRetryNum != null">
-                max_retry_num = #{taskEntity.maxRetryNum}
+                max_retry_num = #{taskEntity.maxRetryNum},
             </if>
             <if test="taskEntity.priority != null">
-                priority = #{taskEntity.priority}
+                priority = #{taskEntity.priority},
             </if>
             <if test="taskEntity.orderTime != null">
-                order_time = #{taskEntity.orderTime}
+                order_time = #{taskEntity.orderTime},
             </if>
             <if test="taskEntity.maxRetryInterval != null">
-                max_retry_interval = #{taskEntity.maxRetryInterval}
+                max_retry_interval = #{taskEntity.maxRetryInterval},
             </if>
             <if test="taskEntity.scheduleLog != null and taskEntity.scheduleLog != ''">
-                schedule_log = #{taskEntity.scheduleLog}
+                schedule_log = #{taskEntity.scheduleLog},
             </if>
             <if test="taskEntity.taskContext != null and taskEntity.taskContext != ''">
-                task_context = #{taskEntity.taskContext}
+                task_context = #{taskEntity.taskContext},
             </if>
             modify_time = now()
         </set>
@@ -101,8 +101,10 @@
         select *
         from ${tableName}
         where task_type = #{taskType}
-          and status = #{status}
-        order by order_time
+        and status in
+        <foreach collection="statusList" item="status" index="index" open="(" close=")" separator=",">
+            #{status}
+        </foreach>
         limit #{limit}
     </select>
     <select id="getTaskById" resultMap="resultMap">

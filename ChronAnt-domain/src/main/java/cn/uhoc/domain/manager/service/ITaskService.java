@@ -18,11 +18,11 @@ public interface ITaskService {
     /**
      * 查询任务列表
      * @param taskType 任务类型
-     * @param status 任务状态
+     * @param combinedStatus 任务状态
      * @param limit 拉取任务数量限制
      * @return 任务列表
      */
-    List<TaskEntity> getTaskList(String taskType, int status, int limit);
+    List<TaskEntity> getTaskList(String taskType, int combinedStatus, int limit);
 
 
     /**
@@ -50,9 +50,9 @@ public interface ITaskService {
     /**
      * 获取指定用户的任务列表
      * @param userId 用户id
-     * @param statusList 状态列表
+     * @param combinedStatus 状态列表
      * @return
      */
-    List<TaskEntity> getTaskByUserIdAndStatus(String userId, int statusList);
+    List<TaskEntity> getTaskByUserIdAndStatus(String userId, int combinedStatus);
 
 }

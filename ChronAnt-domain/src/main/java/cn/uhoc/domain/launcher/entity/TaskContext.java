@@ -1,4 +1,4 @@
-package cn.uhoc.domain.executor.entity;
+package cn.uhoc.domain.launcher.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,5 @@ public class TaskContext {
     private Object[] params;
 
     private Class<?>[] paramsClazz;
-
-    private Object[] envs; // 留作扩展使用
 
 }

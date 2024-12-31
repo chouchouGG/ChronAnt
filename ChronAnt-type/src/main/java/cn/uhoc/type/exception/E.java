@@ -33,6 +33,10 @@ public class E extends RuntimeException{
         this(r.getCode(), r.getInfo());
     }
 
+    public E(ExceptionStatus r, Throwable cause) {
+        this(r.getCode(), r.getInfo(), cause);
+    }
+
     public E(int code, String info) {
         this.code = String.valueOf(code);
         this.info = info;

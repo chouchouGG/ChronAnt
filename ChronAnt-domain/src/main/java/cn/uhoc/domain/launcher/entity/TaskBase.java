@@ -1,4 +1,4 @@
-package cn.uhoc.domain.executor.entity;
+package cn.uhoc.domain.launcher.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

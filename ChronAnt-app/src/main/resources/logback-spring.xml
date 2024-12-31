@@ -98,13 +98,6 @@
         <appender-ref ref="ERROR_FILE"/>
     </appender>
 
-<!--    <appender name="CUSTOM" class="plus.gaga.monitor.sdk.appender.CustomAppender">-->
-<!--        <systemName>big-market</systemName>-->
-<!--        <groupId>cn.bugstack</groupId>-->
-<!--        <host>192.168.1.108</host>-->
-<!--        <port>16379</port>-->
-<!--    </appender>-->
-
     <!-- 开发环境：控制台打印 -->
     <springProfile name="dev">
         <logger name="com.nmys.view" level="debug"/>

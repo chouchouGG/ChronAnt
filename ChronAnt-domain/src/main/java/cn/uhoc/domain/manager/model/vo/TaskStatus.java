@@ -14,20 +14,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public enum TaskStatus {
 
-    PENDING(0x01, "待执行"),
-    EXECUTING(0x02, "执行中"),
-    SUCCESS(0x04, "执行成功"),
-    FAIL(0x08, "执行失败"),
+    // 1-从未执行，2-待执行，4-执行中，8-执行成功，16-执行失败
+    NEVER_EXECUTED(0x01),   // 从未执行
+    PENDING(0x02),          // 待执行
+    EXECUTING(0x04),        // 执行中
+    SUCCESS(0x08),          // 执行成功
+    FAIL(0x10),             // 执行失败
     ;
 
     /**
      * 状态码
      */
     private final int code;
-    /**
-     * 状态描述
-     */
-    private final String description;
+
 
     public static String getErrMsg(TaskStatus taskStatus) {
         switch (taskStatus) {
@@ -46,18 +45,21 @@ public enum TaskStatus {
 
 
     /**
-     * 分解任务状态
+     * 解析任务状态
      *
      * <p>如果任务状态为 0x0c，等价于二进制的 1100，代表成功（SUCCESS）和失败（FAIL）。</p>
+     *
      * @param status 合并的状态
      * @return 分解的状态列表
      */
-    public static List<Integer> getStatusList(int status) {
+    public static List<Integer> parseStatusList(int combinedStatus) {
         List<Integer> statusList = new ArrayList<>();
-        while (status != 0) {
-            int cur = status & -status;
-            statusList.add(cur);
-            status ^= cur;
+        while (combinedStatus != 0) {
+            // 提取最低位的状态
+            int currentStatus = combinedStatus & -combinedStatus;
+            statusList.add(currentStatus);
+            // 移除当前提取的状态
+            combinedStatus ^= currentStatus;
         }
         return statusList;
     }
@@ -66,6 +68,7 @@ public enum TaskStatus {
      * 合并任务状态
      *
      * <p>将多个状态值合并为一个状态</p>
+     *
      * @param statusList 状态列表
      * @return 合并后的状态值
      */

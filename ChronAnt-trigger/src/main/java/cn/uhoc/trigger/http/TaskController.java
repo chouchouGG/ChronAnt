@@ -38,18 +38,19 @@ public class TaskController implements ITaskController {
     @PostMapping("/create_task")
     @Override
     public R createTask(@RequestBody TaskCreateReq taskCreateReq) {
-        if (StringUtils.isNotBlank(taskCreateReq.getTaskType())) {
+        if (StringUtils.isBlank(taskCreateReq.getTaskType())) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
         String taskId = taskService.createTask(taskCreateReq);
-        return new R(TaskCreateRes.builder().taskId(taskId));
+        TaskCreateRes res = TaskCreateRes.builder().taskId(taskId).build();
+        return new R(res);
     }
 
     @GetMapping("/get_task")
     @Override
     public R<TaskRes> getTask(@RequestParam("taskId") String taskId) {
-        if (StringUtils.isNotBlank(taskId)) {
+        if (StringUtils.isBlank(taskId)) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
@@ -62,7 +63,7 @@ public class TaskController implements ITaskController {
     @Override
     public R<List<TaskRes>> getTaskList(@RequestParam("taskType") String taskType, @RequestParam("status") int status, @RequestParam("limit") int limit) {
         // fixme 从这里开始进行理解status的逻辑
-        if (StringUtils.isNotBlank(taskType)) {
+        if (StringUtils.isBlank(taskType)) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
@@ -74,7 +75,7 @@ public class TaskController implements ITaskController {
     @GetMapping("/hold_task")
     @Override
     public R holdTask(@RequestParam("taskType") String taskType, @RequestParam("status") int status, @RequestParam("limit") int limit) {
-        if (StringUtils.isNotBlank(taskType)) {
+        if (StringUtils.isBlank(taskType)) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
@@ -86,7 +87,7 @@ public class TaskController implements ITaskController {
     @PostMapping("/set_task")
     @Override
     public R setTask(@RequestBody TaskSetReq taskSetReq) {
-        if (StringUtils.isNotBlank(taskSetReq.getTaskId())) {
+        if (StringUtils.isBlank(taskSetReq.getTaskId())) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
@@ -97,7 +98,7 @@ public class TaskController implements ITaskController {
     @GetMapping("/user_task_list")
     @Override
     public R getUserTaskList(@RequestParam("userId") String userId, @RequestParam("statusList") int statusList) {
-        if (StringUtils.isNotBlank(userId)) {
+        if (StringUtils.isBlank(userId)) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }
@@ -113,7 +114,7 @@ public class TaskController implements ITaskController {
 
     @GetMapping("/cfg/configuration")
     public R SetTaskCFG(@RequestBody TaskCfgReq taskCfgReq) {
-        if (StringUtils.isNotBlank(taskCfgReq.getTaskType())) {
+        if (StringUtils.isBlank(taskCfgReq.getTaskType())) {
             log.error("input invalid");
             return new R(ExceptionStatus.ERR_INPUT_INVALID);
         }

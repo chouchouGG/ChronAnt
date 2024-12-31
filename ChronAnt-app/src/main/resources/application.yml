@@ -47,12 +47,11 @@ thread:
 # MyBatis配置
 mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml
+  # 'configuration' and 'configLocation' 不能同时配置
+#  configuration:
+#    map-underscore-to-camel-case: true # 开启 [数据库表字段] 与 [实体类字段] 之间的命名规则自动映射，将表字段（user_name）映射为类属性（userName）
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 指定MyBatis的日志实现：将执行的 SQL 语句和参数打印到控制台
   config-location:  classpath:/mybatis/config/mybatis-config.xml
-  configuration:
-    # 开启 [数据库表字段] 与 [实体类字段] 之间的命名规则自动映射，将表字段（user_name）映射为类属性（userName）
-    map-underscore-to-camel-case: true
-    # 指定MyBatis的日志实现：将执行的 SQL 语句和参数打印到控制台
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # 日志
 logging:

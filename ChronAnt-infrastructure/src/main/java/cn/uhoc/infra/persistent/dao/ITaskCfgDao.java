@@ -1,6 +1,5 @@
 package cn.uhoc.infra.persistent.dao;
 
-import cn.uhoc.domain.manager.model.entity.TaskCfgEntity;
 import cn.uhoc.infra.persistent.po.TaskCfg;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,7 +9,7 @@ import java.util.List;
 public interface ITaskCfgDao {
 
 
-    TaskCfgEntity getTaskConfigByType(String taskType);
+    TaskCfg getTaskConfigByType(String taskType);
 
     List<TaskCfg> getTaskTypeCfgList();
 

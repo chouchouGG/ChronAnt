@@ -1,29 +1,35 @@
-package cn.uhoc.domain.executor.service;
+package cn.uhoc.domain.launcher.service;
 
 
 import cn.uhoc.domain.convertor.TaskConverter;
-import cn.uhoc.domain.executor.entity.*;
+import cn.uhoc.domain.launcher.entity.*;
 import cn.uhoc.domain.manager.model.entity.TaskCfgEntity;
 import cn.uhoc.domain.manager.model.entity.TaskEntity;
+import cn.uhoc.domain.manager.model.entity.TaskPosEntity;
 import cn.uhoc.domain.manager.model.vo.TaskConstants;
 import cn.uhoc.domain.manager.model.vo.TaskStatus;
 import cn.uhoc.domain.manager.service.ITaskCfgService;
+import cn.uhoc.domain.manager.service.ITaskPosService;
 import cn.uhoc.domain.manager.service.ITaskService;
 import cn.uhoc.domain.observer.ObserverTypeEnum;
+import cn.uhoc.domain.observer.TimeObserver;
+import cn.uhoc.domain.register.impl.MultiStageAsyncTaskRegistry;
 import cn.uhoc.trigger.api.dto.TaskSetReq;
-import cn.uhoc.type.common.ReflectionUtils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class ExecutorService extends AbstractLauncher {
+@Component
+public class Launcher extends AbstractLauncher {
 
     @Resource
     private ITaskService taskService;
@@ -31,27 +37,88 @@ public class ExecutorService extends AbstractLauncher {
     @Resource
     private ITaskCfgService taskCfgService;
 
-    // 饿汉单例
-    private static final ExecutorService instance = new ExecutorService();
+    @Resource
+    private ITaskPosService taskPosService;
 
-    private ExecutorService() {
+    public Launcher() {
         super();
     }
 
-    public static ExecutorService getInstance() {
-        return instance;
-    }
-
-    @Override
-    protected void registerTaskTypes() {
-        taskRegistry.init();
+    @PostConstruct
+    public void initLauncher() {
+        try {
+            registerObserver();
+            initTaskTypeCfg();
+            initTaskTypes();
+            initTaskOffset();
+            initIntervalTime();
+            initScheduleLimit();
+            initTaskExecuteThreadPool();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            checkDataConsistency();
+        }
     }
 
     /**
-     * 初始化任务拉取限制
+     * 检查任务数据的一致性
      */
-    @Override
-    protected void initScheduleLimit() {
+    private void checkDataConsistency() {
+        // 检查以下所有 Map 是否包含所有任务类型
+        for (String taskType : taskTypeSet) {
+            // 检查任务配置
+            if (!taskTypeCfgMap.containsKey(taskType)) {
+                throw new IllegalStateException("任务配置缺失: 任务类型 [" + taskType + "] 没有对应的配置信息");
+            }
+            // 检查任务偏移量
+            if (!taskOffsetMap.containsKey(taskType)) {
+                throw new IllegalStateException("任务偏移量缺失: 任务类型 [" + taskType + "] 没有对应的偏移量配置");
+            }
+            // 检查任务间隔时间
+            if (!intervalTimeMap.containsKey(taskType)) {
+                throw new IllegalStateException("任务间隔时间缺失: 任务类型 [" + taskType + "] 没有对应的间隔时间配置");
+            }
+            // 检查拉取任务的限制
+            if (!scheduleLimitMap.containsKey(taskType)) {
+                throw new IllegalStateException("拉取任务限制缺失: 任务类型 [" + taskType + "] 没有对应的拉取限制配置");
+            }
+            // 检查任务执行线程池
+            if (!taskExecutorMap.containsKey(taskType)) {
+                throw new IllegalStateException("任务执行线程池缺失: 任务类型 [" + taskType + "] 没有对应的线程池配置");
+            }
+        }
+        log.info("数据一致性检查完成，所有任务类型均已正确配置");
+    }
+
+    private void initTaskOffset() {
+        List<TaskPosEntity> taskPosList = taskPosService.getTaskPosList();
+        for (TaskPosEntity taskPosEntity : taskPosList) {
+            taskOffsetMap.put(taskPosEntity.getTaskType(), new AtomicInteger(taskPosEntity.getScheduleBeginPos()));
+        }
+    }
+
+    /**
+     * 注册观察者
+     */
+    private void registerObserver() {
+        observerManager.registerObserver(new TimeObserver());
+    }
+
+    /**
+     * 加载任务类型的 Class对象
+     */
+    private void initTaskTypes() { // TODO 后期作为组件进行引入，需要扩展为根据注解进行识别
+        // 注册任务类型名到任务Class对象的映射
+        taskRegistry.init();
+        // 初始化任务类型名称集合
+        taskTypeSet = taskRegistry.getTaskTypeSet();
+    }
+
+    /**
+     * 初始化任务一次性拉取限制
+     */
+    private void initScheduleLimit() {
         for (String taskType : taskTypeSet) {
             Integer limit = taskTypeCfgMap.get(taskType).getScheduleLimit();
             scheduleLimitMap.put(taskType, limit);
@@ -59,10 +126,9 @@ public class ExecutorService extends AbstractLauncher {
     }
 
     /**
-     * 注册任务配置信息
+     * 加载任务配置信息
      */
-    @Override
-    protected void loadCfg() {
+    private void initTaskTypeCfg() {
         List<TaskCfgEntity> taskTypeCfgList = taskCfgService.getTaskTypeCfgList();
         for (TaskCfgEntity taskTypeCfg : taskTypeCfgList) {
             // 将新增的任务配置进行更新
@@ -74,8 +140,10 @@ public class ExecutorService extends AbstractLauncher {
         }
     }
 
-    @Override
-    protected void initIntervalTime() {
+    /**
+     * 初始化拉取任务的时间间隔
+     */
+    private void initIntervalTime() {
         for (String taskType : taskTypeSet) {
             TaskCfgEntity taskCfgEntity = taskTypeCfgMap.get(taskType);
             Integer interval = taskCfgEntity.getScheduleInterval() == 0 ? TaskConstants.DEFAULT_TIME_INTERVAL : taskCfgEntity.getScheduleInterval();
@@ -83,34 +151,32 @@ public class ExecutorService extends AbstractLauncher {
         }
     }
 
-    @Override
-    protected void initTaskExecuteThreadPool() {
+    /**
+     * 初始化任务执行线程池
+     */
+    private void initTaskExecuteThreadPool() {
         // 初始化任务执行线程池
         for (String taskType : taskTypeSet) {
             taskExecutorMap.put(taskType, defaultThreadPoolExecutor(taskType));
         }
     }
 
-    @Override
     protected void refreshTaskFetchThreadPool(String taskType) {
-        ScheduledExecutorService scheduledExecutor = defaultTaskFetchExecutor(taskType);
-        // 设置任务拉取调度策略
-        setSchedulePolicy(scheduledExecutor, taskType);
-        // 管理任务拉取线程池
-        taskFetcherMap.put(taskType, scheduledExecutor);
-    }
-
-    private ScheduledExecutorService defaultTaskFetchExecutor(String taskType) {
-        return Executors.newScheduledThreadPool(1);
-    }
-
-    private void setSchedulePolicy(ScheduledExecutorService scheduledExecutor, String taskType) {
-        scheduledExecutor.scheduleAtFixedRate(
-                processTask(taskType),
+        ScheduledExecutorService ses = defaultTaskFetchExecutor(taskType);
+        Runnable command = processTask(taskType);
+        // 设置任务拉取的调度策略
+        ses.scheduleAtFixedRate(
+                command,
                 0,
                 intervalTimeMap.get(taskType),
                 TimeUnit.MILLISECONDS
         );
+        // 统一管理任务拉取线程
+        taskFetcherMap.put(taskType, ses);
+    }
+
+    private ScheduledExecutorService defaultTaskFetchExecutor(String taskType) {
+        return Executors.newScheduledThreadPool(1); // TODO 学习Jdk提供的线程池：ScheduledExecutorService等
     }
 
     private Runnable processTask(String taskType) {
@@ -118,16 +184,26 @@ public class ExecutorService extends AbstractLauncher {
         return () -> {
             try {
                 long begTime = System.currentTimeMillis();
+
                 // 1. 拉取任务
                 List<TaskBase> taskBaseList = fetchTasks(taskType);
+
+                // 2. 判空检查
+                if (taskBaseList == null || taskBaseList.isEmpty()) {
+                    log.info("没有任务需要处理, 任务类型：{}", taskType);
+                    return; // 任务列表为空，直接返回
+                }
+
                 // 2. 执行任务
                 executeTasks(taskType, taskBaseList);
+
                 long endTime = System.currentTimeMillis();
+
                 // 3. 动态休眠
                 long sleepTime = processDynamicSleep(begTime, endTime, intervalTime);
-                log.debug("Dynamic sleep for '{}'ms after processing tasks for taskType='{}'", sleepTime, taskType);
+                log.debug("处理'{}'类型任务后，动态休眠'{}'ms", taskType, sleepTime);
             } catch (Exception e) {
-                log.error("Error occurred while processing tasks for {}", taskType, e);
+                log.error("处理任务时发生错误, taskType: {}", taskType, e);
             }
         };
     }
@@ -170,9 +246,9 @@ public class ExecutorService extends AbstractLauncher {
         }
         // TODO 后期扩展redis使用，分布式部署，需要先整体学习redis
         try {
-            List<TaskEntity> taskList = taskService.getTaskList(taskType, TaskStatus.PENDING.getCode(), scheduleLimitMap.get(taskType));
+            int statusList = TaskStatus.NEVER_EXECUTED.getCode() | TaskStatus.PENDING.getCode();
+            List<TaskEntity> taskList = taskService.getTaskList(taskType, statusList, scheduleLimitMap.get(taskType));
             if (taskList == null || taskList.isEmpty()) {
-                log.warn("No taskBase to deal for taskType={}", taskType);
                 return null;
             }
             observerManager.wakeupObserver(ObserverTypeEnum.onObtain, taskList);
@@ -206,7 +282,7 @@ public class ExecutorService extends AbstractLauncher {
                 taskExecutor.execute(() -> executeTask(taskBase, taskType));
             }
         } else {
-            log.error("No thread pool found for taskBase type: {}", taskType);
+            log.error("未找到任务执行线程池, taskType: {}", taskType);
         }
     }
 
@@ -214,34 +290,34 @@ public class ExecutorService extends AbstractLauncher {
      * 执行任务
      */
     private void executeTask(TaskBase taskBase, String taskType) {
-        Class<?> taskClazz = taskRegistry.getTaskClass(taskType);
         observerManager.wakeupObserver(ObserverTypeEnum.onExecute, taskBase);
-        TaskSetReq taskSetReq;
+        TaskSetReq taskSetReq = null;
+        TaskStageResult taskStageResult = null;
         try {
-            TaskStageResult taskStageResult = executeTaskLogic(taskBase, taskType);
-            taskSetReq = postProcessTask(taskBase, taskStageResult, taskClazz);
+            // 自定义任务的核心执行逻辑
+            taskStageResult = executeTaskLogic(taskBase, taskType);
+            // 为空代表任务所有阶段都已经执行完毕，则需要修改状态
+            if (taskStageResult.getMetadata() == null) {
+                observerManager.wakeupObserver(ObserverTypeEnum.onFinish, taskBase);
+                // fixme null 修改为 taskStageResult
+                taskSetReq = createTaskSetReq(taskBase, TaskStatus.SUCCESS, null, "");
+            } else {
+                taskSetReq = createTaskSetReq(taskBase, TaskStatus.PENDING, taskStageResult, "");
+            }
         } catch (Exception e) {
-            observerManager.wakeupObserver(ObserverTypeEnum.onError, e);
-            taskSetReq = errProcessTask(taskBase, taskType, e);
+            observerManager.wakeupObserver(ObserverTypeEnum.onError, taskBase, e);
+            // 根据当前重试情况，决定任务是直接标记为失败还是继续尝试
+            if (taskBase.getMaxRetryNum() == 0 || taskBase.getCrtRetryNum() >= taskBase.getMaxRetryNum()) {
+                taskSetReq = createTaskSetReq(taskBase, TaskStatus.FAIL, taskStageResult, e.getMessage());
+                invoke(taskType, "handleError");
+            } else {
+                taskSetReq = createTaskSetReq(taskBase, TaskStatus.PENDING, taskStageResult, "Last Exception Information: \n" + e.getMessage());
+                taskSetReq.updateCurrentRetryCount(taskBase.getCrtRetryNum() + 1);
+            }
+        } finally {
+            // 更新任务信息
+            taskService.setTask(taskSetReq);
         }
-        // 更新任务
-        taskService.setTask(taskSetReq);
-    }
-
-    /**
-     * 任务成功执行的后置处理
-     */
-    private TaskSetReq postProcessTask(TaskBase taskBase, TaskStageResult taskStageResult, Class<?> taskClazz) {
-        TaskSetReq taskSetReq;
-        // 为空代表任务所有阶段都已经执行完毕，则需要修改状态
-        if (taskStageResult == null) {
-            observerManager.wakeupObserver(ObserverTypeEnum.onFinish, taskBase);
-            taskSetReq = createTaskSetReq(taskBase, TaskStatus.SUCCESS, null, "");
-            ReflectionUtils.reflectMethod(taskClazz, "handleFinish", new Object[]{}, new Class[]{});
-        } else {
-            taskSetReq = createTaskSetReq(taskBase, TaskStatus.PENDING, taskStageResult, "");
-        }
-        return taskSetReq;
     }
 
     private ThreadPoolExecutor defaultThreadPoolExecutor(String taskType) {
@@ -273,26 +349,33 @@ public class ExecutorService extends AbstractLauncher {
     }
 
     /**
-     * 执行任务具体逻辑（具体反射调用等）
+     * 执行任务具体逻辑
      */
     private TaskStageResult executeTaskLogic(TaskBase taskBase, String taskType) {
-        Class<?> taskClazz = taskRegistry.getTaskClass(taskBase.getTaskType());
-        Method method = ReflectionUtils.getMethod(taskClazz, taskBase.getTaskStage(), taskBase.getTaskContext().getParamsClazz());
-        TaskStageResult taskStageResult = ReflectionUtils.invokeMethod(taskClazz, method, taskBase.getTaskContext().getParams());
+        Integer status = taskBase.getStatus();
+        Object[] args = taskBase.getTaskContext().getParams();
+        TaskStageResult taskStageResult;
+        if (TaskStatus.NEVER_EXECUTED.getCode() == status) { // 如果任务从未执行，则调用 handleProcess 方法
+            taskStageResult = invoke(taskType, "handleProcess", args);
+        } else if (TaskStatus.PENDING.getCode() == status) { // 如果任务处于待执行状态，则调用任务的当前阶段方法
+            taskStageResult = invoke(taskType, taskBase.getTaskStage(), args);
+        } else if (TaskStatus.EXECUTING.getCode() == status) { // 如果任务正在执行，记录日志或采取相应措施
+            throw new IllegalStateException("任务正在执行中，不允许重复执行！状态: EXECUTING");
+        } else if (TaskStatus.SUCCESS.getCode() == status) { // 如果任务已成功执行，记录日志或返回成功的状态
+            throw new IllegalStateException("任务已成功执行，无法重复执行！状态: SUCCESS");
+        } else if (TaskStatus.FAIL.getCode() == status) { // 如果任务执行失败，则根据逻辑重新执行
+            taskStageResult = invoke(taskType, "handleFailure");
+        } else {
+            throw new IllegalArgumentException("未知任务状态: " + status);
+        }
         return taskStageResult;
     }
 
-    private TaskSetReq errProcessTask(TaskBase taskBase, String taskType, Exception e) {
-        TaskSetReq taskSetReq;
-        // 根据当前重试情况，决定任务是直接标记为失败还是继续尝试
-        if (taskBase.getMaxRetryNum() == 0 || taskBase.getCrtRetryNum() >= taskBase.getMaxRetryNum()) {
-            taskSetReq = createTaskSetReq(taskBase, TaskStatus.FAIL, null, e.getMessage());
-            ReflectionUtils.reflectMethod(taskRegistry.getTaskClass(taskType), "handleError", new Object[0], new Class[0]);
-        } else {
-            taskSetReq = createTaskSetReq(taskBase, TaskStatus.PENDING, null, "Last Exception Information: \n" + e.getMessage())
-                    .updateCurrentRetryCount(taskBase.getCrtRetryNum() + 1);
-        }
-        return taskSetReq;
+    private TaskStageResult invoke(String taskType, String stageMethodName, Object... args) {
+        // 根据类型获取对应的任务代理处理器
+        MultiStageAsyncTaskRegistry.TaskProxyHandler taskProxyHandler = MultiStageAsyncTaskRegistry.getTaskProxyMap().get(taskType);
+        TaskStageResult result = taskProxyHandler.invoke(stageMethodName, args);
+        return result;
     }
 
     private TaskSetReq createTaskSetReq(TaskBase taskBase, TaskStatus taskStatus, TaskStageResult taskStageResult, String errMsg) {
@@ -304,9 +387,10 @@ public class ExecutorService extends AbstractLauncher {
         if (taskStageResult != null) {
             // 设置 ’任务阶段‘ 和 ’任务上下文‘
             TaskStageMeta stageMeta = taskStageResult.getMetadata();
-            taskSetReq.setTaskStage(stageMeta.getTaskStage());
+            taskSetReq.setTaskStage(stageMeta.getNextTaskStage());
             taskSetReq.setTaskContext(JSON.toJSONString(stageMeta.getTaskContext()));
 
+            // TODO 日志中也将每个阶段的元数据作为日志进行记录
             // 设置 ’调度日志‘
             String result = JSON.toJSONString(taskStageResult.getResult());
             String scheduleLog = getScheduleLog(taskBase.getScheduleLog(), result, getErrMsg(taskStatus, errMsg));

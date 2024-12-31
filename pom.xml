@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>2.7.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cn.uhoc</groupId>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>3.0.4</version>
+            <version>2.0.1</version>
             <!-- MyBatis 与 Spring Boot 集成的 Starter，简化了 MyBatis 的配置和使用 -->
         </dependency>
         <dependency>
@@ -77,29 +77,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.28</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-aop</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.mapstruct</groupId>-->
-<!--            <artifactId>mapstruct</artifactId>-->
-<!--            <version>1.5.5.Final</version>-->
-<!--            &lt;!&ndash; MapStruct 核心库，用于在 Java 代码中实现 POJO（Plain Old Java Object）之间的自动映射。-->
-<!--                 - 支持从一个对象映射到另一个对象-->
-<!--                 - 提高转换逻辑的效率，减少样板代码-->
-<!--                 - 适用于 DTO、Entity、VO 等之间的转换 &ndash;&gt;-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.mapstruct</groupId>-->
-<!--            <artifactId>mapstruct-processor</artifactId>-->
-<!--            <version>1.5.5.Final</version>-->
-<!--            <scope>provided</scope>-->
-<!--            &lt;!&ndash; MapStruct 编译器注解处理器，用于在编译时生成映射实现类。-->
-<!--                 - 自动根据注解生成映射方法的实现代码-->
-<!--                 - 此依赖为 MapStruct 的代码生成提供支持-->
-<!--                 - 需要设置 scope 为 provided，因为仅在编译阶段需要 &ndash;&gt;-->
-<!--        </dependency>-->
 
     </dependencies>
 

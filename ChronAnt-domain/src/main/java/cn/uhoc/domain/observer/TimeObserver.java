@@ -1,6 +1,6 @@
 package cn.uhoc.domain.observer;
 
-import cn.uhoc.domain.executor.entity.TaskBase;
+import cn.uhoc.domain.launcher.entity.TaskBase;
 import cn.uhoc.domain.manager.model.entity.TaskEntity;
 import cn.uhoc.domain.manager.service.ITaskService;
 import cn.uhoc.type.common.UserConfig;
@@ -26,7 +26,7 @@ public class TimeObserver implements IObserver { // TODO 将控制台打印(Syst
     @Override
     @ObserverStage(observerType = ObserverTypeEnum.onObtain)
     public void onObtain(List<TaskEntity> taskEntityList) {
-        log.info("Starting to load context, number of tasks: {}", taskEntityList.size());
+        log.info("【onObtain】 - Starting to load context, number of tasks: {}", taskEntityList.size());
     }
 
     // 执行任务前做的动作，目前是简单打印
@@ -34,14 +34,14 @@ public class TimeObserver implements IObserver { // TODO 将控制台打印(Syst
     @ObserverStage(observerType = ObserverTypeEnum.onExecute)
     public void onExecute(TaskBase taskBase) {
         beginTime = System.currentTimeMillis();
-        log.info("Task '{}' execution started, Task ID: '{}'", taskBase.getTaskType(), taskBase.getTaskId());
+        log.info("【onExecute】 - '{}'类型任务‘开始’执行, Task ID: '{}'", taskBase.getTaskType(), taskBase.getTaskId());
     }
 
     // 启动动作
     @Override
     @ObserverStage(observerType = ObserverTypeEnum.onBoot)
     public void onBoot() {
-        log.info("Task started, User ID: {}, Current thread: {}, Fetching task", UserConfig.USERID, Thread.currentThread().getName());
+        log.info("【onBoot】 - 任务启动, User ID: {}, Current thread: {}, Fetching task", UserConfig.USERID, Thread.currentThread().getName());
     }
 
     // 任务执行完成做的动作
@@ -49,20 +49,20 @@ public class TimeObserver implements IObserver { // TODO 将控制台打印(Syst
     @ObserverStage(observerType = ObserverTypeEnum.onFinish)
     public void onFinish(TaskBase taskBase) {
         long costTime = System.currentTimeMillis() - beginTime;
-        log.info("Task '{}' finished, time taken: {} ms", taskBase.getTaskType(), costTime);
+        log.info("【onFinish】 - '{}'类型任务执行‘完毕’, 花费时间: {} ms", taskBase.getTaskType(), costTime);
     }
 
     // 执行任务失败时的动作，目前是本地重试
     @Override
     @ObserverStage(observerType = ObserverTypeEnum.onError)
     public void onError(TaskBase taskBase, Exception e) {
-        log.error("Task '{}' failed, error message: {}", taskBase.getTaskType(), e.getMessage());
+        log.error("【onError】 - '{}' 类型任务执行失败，错误信息: {}", taskBase.getTaskType(), e.getMessage(), e);
     }
 
     // 获取待定使用
     @Override
     @ObserverStage(observerType = ObserverTypeEnum.onStop)
     public void onStop(TaskBase taskBase) {
-        log.info("Task '{}' stopped", taskBase.getTaskType());
+        log.info("【onStop】 - '{}'类型任务‘停止’执行", taskBase.getTaskType());
     }
 }

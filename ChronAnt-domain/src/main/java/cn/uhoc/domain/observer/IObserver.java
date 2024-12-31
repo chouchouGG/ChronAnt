@@ -1,6 +1,6 @@
 package cn.uhoc.domain.observer;
 
-import cn.uhoc.domain.executor.entity.TaskBase;
+import cn.uhoc.domain.launcher.entity.TaskBase;
 import cn.uhoc.domain.manager.model.entity.TaskEntity;
 
 import java.util.List;

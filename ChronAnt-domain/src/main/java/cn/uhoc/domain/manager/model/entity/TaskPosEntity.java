@@ -1,5 +1,6 @@
 package cn.uhoc.domain.manager.model.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  * @create: 2024-12-01 19:07
  **/
 @Data
+@Builder
 public class TaskPosEntity {
 
     /**

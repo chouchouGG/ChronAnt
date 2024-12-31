@@ -1,6 +1,6 @@
 package cn.uhoc.config;
 
-import cn.uhoc.domain.executor.service.ThreadPoolConfigProvider;
+import cn.uhoc.domain.launcher.service.ThreadPoolConfigProvider;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

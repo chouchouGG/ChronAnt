@@ -49,4 +49,5 @@ public class TaskCfgEntity {
                 .retryInterval(taskCfgReq.getRetryInterval())
                 .build();
     }
+
 }

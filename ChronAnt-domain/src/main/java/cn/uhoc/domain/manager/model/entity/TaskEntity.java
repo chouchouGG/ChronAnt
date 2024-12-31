@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
  **/
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class TaskEntity {
 
     /**
@@ -36,27 +34,27 @@ public class TaskEntity {
     /**
      * 状态是针对于当前阶段而言的，描述当前阶段是待执行、执行中、成功、失败
      */
-    private int status;
+    private Integer status;
     /**
      * 已重试次数：current retry num
      */
-    private int crtRetryNum;
+    private Integer crtRetryNum;
     /**
      * 最大重试次数：配置表中也有该字段，可以理解为某一类型任务的默认配置。特定的任务还支持单独指定。
      */
-    private int maxRetryNum;
+    private Integer maxRetryNum;
     /**
      * 排序时间：考虑任务创建时间、更新时间、重试间隔、优先级等因素后，对任务执行顺序排序的因子
      */
-    private long orderTime;
+    private Long orderTime;
     /**
      * 任务优先级
      */
-    private int priority;
+    private Integer priority;
     /**
      * 最大重试间隔
      */
-    private int maxRetryInterval;
+    private Integer maxRetryInterval;
     /**
      * 调度信息记录
      */

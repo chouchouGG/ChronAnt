@@ -38,12 +38,12 @@ public class TaskServiceImpl implements ITaskService {
         String taskType = taskCreateReq.getTaskType();
 
         // 获取任务在数据库表中的位置偏移
-        TaskPosEntity taskPos = taskRepository.getTaskPositionByType(taskType);
+        TaskPosEntity taskPos = taskRepository.getTaskPosByType(taskType);
         // 获取任务类型的配置参数
         TaskCfgEntity taskTypeCfg = taskRepository.getTaskConfigByType(taskType);
 
         // 构建任务对象并写入数据库
-        String taskId = null;
+        String taskId;
         try {
             TaskEntity taskEntity = buildTaskModel(taskCreateReq, taskPos, taskTypeCfg);
             taskId = taskEntity.getTaskId();
@@ -59,11 +59,12 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public List<TaskEntity> getTaskList(String taskType, int status, int limit) {
+    public List<TaskEntity> getTaskList(String taskType, int combinedStatus, int limit) {
         int aLimit = adjustLimit(limit);
-        TaskPosEntity taskPos = taskRepository.getTaskPositionByType(taskType);
+        TaskPosEntity taskPos = taskRepository.getTaskPosByType(taskType);
         String tableName = getTableName(taskType, taskPos.getScheduleBeginPos());
-        return taskRepository.getTaskList(tableName, taskType, status, aLimit);
+        List<Integer> statusList = TaskStatus.parseStatusList(combinedStatus);
+        return taskRepository.getTaskList(tableName, taskType, statusList, aLimit);
     }
 
     @Override
@@ -75,9 +76,10 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public List<TaskEntity> holdTask(String taskType, int status, int limit) {
         int aLimit = adjustLimit(limit);
-        TaskPosEntity taskPos = taskRepository.getTaskPositionByType(taskType);
+        TaskPosEntity taskPos = taskRepository.getTaskPosByType(taskType);
         String tableName = getTableName(taskType, taskPos.getScheduleBeginPos());
-        List<TaskEntity> taskEntityList = taskRepository.getTaskList(tableName, taskType, status, aLimit);
+        List<Integer> statusList = TaskStatus.parseStatusList(status);
+        List<TaskEntity> taskEntityList = taskRepository.getTaskList(tableName, taskType, statusList, aLimit);
         // 提前处理空列表的情况
         if (taskEntityList == null || taskEntityList.isEmpty()) {
             log.info("No tasks found for table: {}, taskType: {}, status: {}", tableName, taskType, status);
@@ -101,6 +103,7 @@ public class TaskServiceImpl implements ITaskService {
     public void setTask(TaskSetReq taskSetReq) {
         String tableName = getTableNameById(taskSetReq.getTaskId());
         TaskEntity taskEntity = TaskEntity.builder()
+                .taskId(taskSetReq.getTaskId())
                 .taskStage(taskSetReq.getTaskStage())
                 .status(taskSetReq.getStatus())
                 .crtRetryNum(taskSetReq.getCrtRetryNum())
@@ -123,11 +126,11 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public List<TaskEntity> getTaskByUserIdAndStatus(String userId, int status) {
+    public List<TaskEntity> getTaskByUserIdAndStatus(String userId, int combinedStatus) {
         List<TaskEntity> taskEntityList;
         // TODO 表明tableName临时使用，后续完善为一个任务表，而不是一个类型的任务一个表
         String tableName = getTableName("LarkTask", 1);
-        List<Integer> statusList = TaskStatus.getStatusList(status);
+        List<Integer> statusList = TaskStatus.parseStatusList(combinedStatus);
         try {
             taskEntityList = taskRepository.getTaskByUseridAndStatus(userId, statusList, tableName); // TODO 去掉tableName参数
         } catch (Exception e) {
@@ -155,9 +158,11 @@ public class TaskServiceImpl implements ITaskService {
                 .userId(taskCreateReq.getUserId())
                 .taskId(taskId)
                 .taskType(taskCreateReq.getTaskType())
-                .status(TaskStatus.PENDING.getCode())
+                .status(TaskStatus.NEVER_EXECUTED.getCode()) // 首次添加的任务状态
                 .crtRetryNum(0)
                 .maxRetryNum(taskTypeCfg.getMaxRetryNum())
+                .orderTime(System.currentTimeMillis())
+                .priority(0) // TODO 优先级固定为0
                 .maxRetryInterval(taskTypeCfg.getRetryInterval())
                 .taskStage(taskCreateReq.getTaskStage())
                 .scheduleLog(taskCreateReq.getScheduleLog())
@@ -169,7 +174,7 @@ public class TaskServiceImpl implements ITaskService {
      * 构建新建的任务待插入的数据库表名
      */
     private String getTableName(String taskType, int pos) {
-        return "task_" + taskType.toLowerCase() + "_" + pos;
+        return "task_type_" + taskType.toLowerCase() + "_" + pos;
     }
 
     /**

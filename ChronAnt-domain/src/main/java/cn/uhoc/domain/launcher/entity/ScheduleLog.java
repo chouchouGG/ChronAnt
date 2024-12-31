@@ -1,5 +1,6 @@
-package cn.uhoc.domain.executor.entity;
+package cn.uhoc.domain.launcher.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class ScheduleLog {
 
     // 上一次的日志数据

@@ -4,6 +4,8 @@ package cn.uhoc.infra.persistent.po;
 import cn.uhoc.domain.manager.model.entity.TaskEntity;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class Task {
 
@@ -62,11 +64,11 @@ public class Task {
     /**
      *
      */
-    private Long createTime;
+    private LocalDateTime createTime;
     /**
      *
      */
-    private Long modifyTime;
+    private LocalDateTime modifyTime;
 
     public TaskEntity toEntity() {
         return TaskEntity.builder()
